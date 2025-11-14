@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>詳細設計書 - Arduino UNO R4 MINIMA LCD Display</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 6px 7.5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:hover {
+            background: #f8f9ff;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card .number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .stat-card .label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        .wiring-diagram {
+            background: #f8f9ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        .lcd-display {
+            background: #2a5934;
+            color: #7fff00;
+            border: 5px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5em;
+            line-height: 1.8;
+            margin: 20px 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #eee;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 5px;
+        }
+        
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        ul li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        ul li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+        
+        .footer {
+            background: #f8f9ff;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 2px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 詳細設計書</h1>
+            <p>Arduino UNO R4 MINIMA - 20x4 I2C LCD Display Demo</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Version 1.0 | 2025-11-14</p>
+        </div>
+        
+        <div class="content">
+            <!-- 概要統計 -->
+            <div class="section">
+                <h2>📈 プロジェクト統計</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="label">フラッシュメモリ使用</div>
+                        <div class="number">17%</div>
+                        <div class="label">45,468 / 262,144 bytes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">RAM使用</div>
+                        <div class="number">15%</div>
+                        <div class="label">5,120 / 32,768 bytes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">コンパイル時間</div>
+                        <div class="number">1.8<span style="font-size:0.5em">秒</span></div>
+                        <div class="label">1,806 ms</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">アップロード時間</div>
+                        <div class="number">15.5<span style="font-size:0.5em">秒</span></div>
+                        <div class="label">15,498 ms</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3>メモリ使用率</h3>
+                    <p>フラッシュメモリ</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 17%">17%</div>
+                    </div>
+                    <p>RAM</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 15%">15%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- システム概要 -->
+            <div class="section">
+                <h2>🎯 システム概要</h2>
+                <div class="card">
+                    <h4>目的</h4>
+                    <p>Arduino UNO R4 MINIMAを使用して、SunFounder 20x4 I2C LCDディスプレイにカウンタを表示するデモプログラム。</p>
+                </div>
+                <div class="card">
+                    <h4>主要機能</h4>
+                    <ul>
+                        <li>LCDディスプレイに起動メッセージを表示</li>
+                        <li>1秒ごとにカウンタをインクリメント</li>
+                        <li>カウンタ値をLCD 4行目に表示</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- ハードウェア仕様 -->
+            <div class="section">
+                <h2>🔧 ハードウェア仕様</h2>
+                <h3>使用部品</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>部品名</th>
+                            <th>型番/仕様</th>
+                            <th>数量</th>
+                            <th>用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>マイコンボード</td>
+                            <td>Arduino UNO R4 MINIMA</td>
+                            <td>1</td>
+                            <td>メインコントローラ</td>
+                        </tr>
+                        <tr>
+                            <td>LCDディスプレイ</td>
+                            <td>SunFounder 20x4 I2C LCD</td>
+                            <td>1</td>
+                            <td>情報表示</td>
+                        </tr>
+                        <tr>
+                            <td>USBケーブル</td>
+                            <td>USB Type-C</td>
+                            <td>1</td>
+                            <td>電源供給・書き込み</td>
+                        </tr>
+                        <tr>
+                            <td>ジャンパーワイヤ</td>
+                            <td>メス-メス</td>
+                            <td>4</td>
+                            <td>I2C接続</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>配線図</h3>
+                <div class="wiring-diagram">
+Arduino UNO R4 MINIMA          SunFounder 20x4 I2C LCD
+┌─────────────────┐           ┌──────────────────┐
+│                 │           │                  │
+│  5V     ────────┼───────────┤ VCC              │
+│  GND    ────────┼───────────┤ GND              │
+│  SDA(A4)────────┼───────────┤ SDA              │
+│  SCL(A5)────────┼───────────┤ SCL              │
+│                 │           │                  │
+└─────────────────┘           └──────────────────┘
+                </div>
+                
+                <div class="card">
+                    <h4>I2C仕様</h4>
+                    <p><strong>I2Cアドレス:</strong> <code>0x27</code> (または <code>0x3F</code>)</p>
+                    <p><strong>通信速度:</strong> 標準モード (100kbps)</p>
+                    <p><strong>プルアップ抵抗:</strong> LCD基板上に実装済み</p>
+                </div>
+            </div>
+            
+            <!-- LCD表示 -->
+            <div class="section">
+                <h2>📺 LCD表示仕様</h2>
+<h3>表示レイアウト</h3>
+                <svg width="600" height="200" viewBox="0 0 600 200" style="max-width: 100%; margin: 20px 0;">
+                    <!-- LCD外枠 -->
+                    <rect x="50" y="20" width="500" height="160" fill="#1e3a8a" stroke="#333" stroke-width="8" rx="10"/>
+                    <!-- LCD内部 -->
+                    <rect x="65" y="35" width="470" height="130" fill="#2563eb" stroke="#1e40af" stroke-width="2" rx="5"/>
+                    
+                    <!-- LCD表示テキスト -->
+                    <text x="80" y="65" font-family="'Courier New', monospace" font-size="18" fill="#ffffff" font-weight="bold">Arduino UNO R4</text>
+                    <text x="80" y="95" font-family="'Courier New', monospace" font-size="18" fill="#ffffff" font-weight="bold">LED Blink 100ms</text>
+                    <text x="80" y="125" font-family="'Courier New', monospace" font-size="18" fill="#ffffff" font-weight="bold">20x4 I2C LCD</text>
+                    <text x="80" y="155" font-family="'Courier New', monospace" font-size="18" fill="#ffffff" font-weight="bold">Count: 123</text>
+                    
+                    <!-- グリッド線（参考） -->
+                    <line x1="65" y1="72" x2="535" y2="72" stroke="#3b82f6" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="65" y1="102" x2="535" y2="102" stroke="#3b82f6" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="65" y1="132" x2="535" y2="132" stroke="#3b82f6" stroke-width="0.5" opacity="0.3"/>
+                </svg>
+                <h3>表示内容</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>行</th>
+                            <th>列</th>
+                            <th>表示内容</th>
+                            <th>更新頻度</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>0-14</td>
+                            <td>"Arduino UNO R4"</td>
+                            <td><span class="badge badge-info">起動時のみ</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>0-15</td>
+                            <td>"LED Blink 100ms"</td>
+                            <td><span class="badge badge-info">起動時のみ</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>0-12</td>
+                            <td>"20x4 I2C LCD"</td>
+                            <td><span class="badge badge-info">起動時のみ</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>0-6</td>
+                            <td>"Count: "</td>
+                            <td><span class="badge badge-info">起動時のみ</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>7-19</td>
+                            <td>カウンタ値</td>
+                            <td><span class="badge badge-warning">1秒ごと</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- ソフトウェア仕様 -->
+            <div class="section">
+                <h2>💻 ソフトウェア仕様</h2>
+                <h3>使用ライブラリ</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ライブラリ名</th>
+                            <th>バージョン</th>
+                            <th>用途</th>
+                            <th>ステータス</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Arduino.h</td>
+                            <td>-</td>
+                            <td>Arduino標準ライブラリ</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>LiquidCrystal_I2C</td>
+                            <td>2.0.0</td>
+                            <td>I2C LCD制御</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Wire</td>
+                            <td>-</td>
+                            <td>I2C通信</td>
+                            <td><span class="badge badge-success">✓</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>定数定義</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>定数名</th>
+                            <th>型</th>
+                            <th>値</th>
+                            <th>説明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>LED_PIN</code></td>
+                            <td>uint8_t</td>
+                            <td>LED_BUILTIN</td>
+                            <td>LED出力ピン</td>
+                        </tr>
+                        <tr>
+                            <td><code>DELAY_TIME_MS</code></td>
+                            <td>uint16_t</td>
+                            <td>50</td>
+                            <td>遅延時間(未使用)</td>
+                        </tr>
+                        <tr>
+                            <td><code>LCD_I2C_ADDR</code></td>
+                            <td>uint8_t</td>
+                            <td>0x27</td>
+                            <td>LCDのI2Cアドレス</td>
+                        </tr>
+                        <tr>
+                            <td><code>LCD_COLS</code></td>
+                            <td>uint8_t</td>
+                            <td>20</td>
+                            <td>LCD列数</td>
+                        </tr>
+                        <tr>
+                            <td><code>LCD_ROWS</code></td>
+                            <td>uint8_t</td>
+                            <td>4</td>
+                            <td>LCD行数</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 関数仕様 -->
+            <div class="section">
+                <h2>⚙️ 関数仕様</h2>
+                
+                <h3>関数構成図</h3>
+                <svg width="800" height="400" viewBox="0 0 800 400" style="max-width: 100%; margin: 20px 0;">
+                    <!-- 定義 -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#667eea" />
+                        </marker>
+                        <filter id="shadow">
+                            <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                        </filter>
+                    </defs>
+                    
+                    <!-- 背景 -->
+                    <rect width="800" height="400" fill="#f8f9ff" rx="10"/>
+                    
+                    <!-- main関数 (Arduino自動生成) -->
+                    <rect x="320" y="20" width="160" height="60" fill="#e0e7ff" stroke="#667eea" stroke-width="2" rx="8" filter="url(#shadow)"/>
+                    <text x="400" y="45" font-family="'Courier New', monospace" font-size="14" fill="#333" text-anchor="middle" font-weight="bold">main()</text>
+                    <text x="400" y="62" font-family="Arial" font-size="11" fill="#666" text-anchor="middle">(Arduino自動生成)</text>
+                    
+                    <!-- 矢印: main -> setup -->
+                    <line x1="360" y1="80" x2="260" y2="130" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <text x="300" y="100" font-family="Arial" font-size="11" fill="#667eea" font-weight="bold">①初回のみ</text>
+                    
+                    <!-- 矢印: main -> loop -->
+                    <line x1="440" y1="80" x2="540" y2="130" stroke="#667eea" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <text x="500" y="100" font-family="Arial" font-size="11" fill="#667eea" font-weight="bold">②繰り返し</text>
+                    
+                    <!-- setup関数 -->
+                    <rect x="80" y="130" width="200" height="220" fill="#fff" stroke="#764ba2" stroke-width="3" rx="8" filter="url(#shadow)"/>
+                    <rect x="80" y="130" width="200" height="40" fill="#764ba2" rx="8"/>
+                    <text x="180" y="155" font-family="'Courier New', monospace" font-size="16" fill="#fff" text-anchor="middle" font-weight="bold">setup()</text>
+                    
+                    <!-- setup関数の処理ステップ -->
+                    <text x="95" y="190" font-family="Arial" font-size="12" fill="#333" font-weight="bold">■ 初期化処理 (約200ms)</text>
+                    
+                    <rect x="95" y="200" width="170" height="30" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="1" rx="4"/>
+                    <text x="102" y="220" font-family="Arial" font-size="11" fill="#0369a1">pinMode(LED_PIN, OUTPUT)</text>
+                    
+                    <rect x="95" y="235" width="170" height="30" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="4"/>
+                    <text x="102" y="255" font-family="Arial" font-size="11" fill="#15803d">lcd.init()</text>
+                    
+                    <rect x="95" y="270" width="170" height="30" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="4"/>
+                    <text x="102" y="290" font-family="Arial" font-size="11" fill="#15803d">lcd.backlight()</text>
+                    
+                    <rect x="95" y="305" width="170" height="30" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="4"/>
+                    <text x="102" y="325" font-family="Arial" font-size="11" fill="#15803d">lcd.clear() + メッセージ表示</text>
+                    
+                    <!-- loop関数 -->
+                    <rect x="520" y="130" width="200" height="220" fill="#fff" stroke="#10b981" stroke-width="3" rx="8" filter="url(#shadow)"/>
+                    <rect x="520" y="130" width="200" height="40" fill="#10b981" rx="8"/>
+                    <text x="620" y="155" font-family="'Courier New', monospace" font-size="16" fill="#fff" text-anchor="middle" font-weight="bold">loop()</text>
+                    
+                    <!-- loop関数の処理ステップ -->
+                    <text x="535" y="190" font-family="Arial" font-size="12" fill="#333" font-weight="bold">■ メインループ (1秒周期)</text>
+                    
+                    <rect x="535" y="200" width="170" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="4"/>
+                    <text x="542" y="220" font-family="Arial" font-size="11" fill="#92400e">loopCounter++</text>
+                    
+                    <rect x="535" y="235" width="170" height="30" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="4"/>
+                    <text x="542" y="255" font-family="Arial" font-size="11" fill="#15803d">lcd.setCursor(0, 3)</text>
+                    
+                    <rect x="535" y="270" width="170" height="30" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="4"/>
+                    <text x="542" y="290" font-family="Arial" font-size="11" fill="#15803d">lcd.print("Count: ")</text>
+                    
+                    <rect x="535" y="305" width="170" height="30" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="4"/>
+                    <text x="542" y="325" font-family="Arial" font-size="11" fill="#15803d">lcd.print(loopCounter)</text>
+                    
+                    <!-- 凡例 -->
+                    <g transform="translate(50, 365)">
+                        <text x="0" y="0" font-family="Arial" font-size="12" fill="#333" font-weight="bold">凡例:</text>
+                        <rect x="40" y="-12" width="15" height="15" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="1" rx="2"/>
+                        <text x="60" y="0" font-family="Arial" font-size="11" fill="#666">GPIO制御</text>
+                        <rect x="140" y="-12" width="15" height="15" fill="#f0fdf4" stroke="#22c55e" stroke-width="1" rx="2"/>
+                        <text x="160" y="0" font-family="Arial" font-size="11" fill="#666">LCD制御</text>
+                        <rect x="240" y="-12" width="15" height="15" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="2"/>
+                        <text x="260" y="0" font-family="Arial" font-size="11" fill="#666">カウンタ更新</text>
+                    </g>
+                </svg>
+                
+                <div class="card">
+                    <h4>setup()</h4>
+                    <p><strong>概要:</strong> 初期化処理</p>
+                    <p><strong>実行時間:</strong> 約200ms</p>
+                    <p><strong>処理フロー:</strong></p>
+                    <ul>
+                        <li>LEDピンを出力モードに設定</li>
+                        <li>LCD初期化 (<code>lcd.init()</code>)</li>
+                        <li>バックライトON (<code>lcd.backlight()</code>)</li>
+                        <li>画面クリア (<code>lcd.clear()</code>)</li>
+                        <li>起動メッセージ表示</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4>loop()</h4>
+                    <p><strong>概要:</strong> メインループ処理</p>
+                    <p><strong>実行周期:</strong> 1秒</p>
+                    <p><strong>処理フロー:</strong></p>
+                    <ul>
+                        <li>ループカウンタをインクリメント</li>
+                        <li>LCDカーソルを4行目先頭に移動</li>
+                        <li>"Count: " を表示</li>
+                        <li>カウンタ値を表示</li>
+                        <li>余分な文字をクリア</li>
+                        <li>1000ms待機</li>
+                    </ul>
+                </div>
+                
+                <h3>関数階層ツリー</h3>
+                <svg width="700" height="500" viewBox="0 0 700 500" style="max-width: 100%; margin: 20px 0;">
+                    <!-- 背景 -->
+                    <rect width="700" height="500" fill="#f8f9ff" rx="10"/>
+                    
+                    <!-- タイトル -->
+                    <text x="350" y="30" font-family="Arial" font-size="18" fill="#333" text-anchor="middle" font-weight="bold">関数階層構造</text>
+                    
+                    <!-- main関数 (第1階層) -->
+                    <rect x="280" y="60" width="140" height="45" fill="#e0e7ff" stroke="#667eea" stroke-width="2.5" rx="8"/>
+                    <text x="350" y="80" font-family="'Courier New', monospace" font-size="15" fill="#667eea" text-anchor="middle" font-weight="bold">main()</text>
+                    <text x="350" y="95" font-family="Arial" font-size="10" fill="#666" text-anchor="middle">[Arduino自動生成]</text>
+                    
+                    <!-- 矢印: main -> setup -->
+                    <line x1="310" y1="105" x2="180" y2="155" stroke="#667eea" stroke-width="2.5"/>
+                    <text x="230" y="125" font-family="Arial" font-size="11" fill="#667eea" font-weight="bold">① 初回のみ</text>
+                    
+                    <!-- 矢印: main -> loop -->
+                    <line x1="390" y1="105" x2="520" y2="155" stroke="#667eea" stroke-width="2.5"/>
+                    <text x="470" y="125" font-family="Arial" font-size="11" fill="#667eea" font-weight="bold">② 繰り返し</text>
+                    
+                    <!-- setup関数 (第2階層) -->
+                    <rect x="50" y="155" width="260" height="45" fill="#f3e8ff" stroke="#764ba2" stroke-width="2.5" rx="8"/>
+                    <text x="180" y="175" font-family="'Courier New', monospace" font-size="15" fill="#764ba2" text-anchor="middle" font-weight="bold">setup()</text>
+                    <text x="180" y="190" font-family="Arial" font-size="10" fill="#666" text-anchor="middle">[初回1回のみ実行]</text>
+                    
+                    <!-- setup -> pinMode -->
+                    <line x1="100" y1="200" x2="100" y2="240" stroke="#999" stroke-width="2"/>
+                    <rect x="30" y="240" width="140" height="32" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2" rx="6"/>
+                    <text x="100" y="261" font-family="'Courier New', monospace" font-size="13" fill="#0369a1" text-anchor="middle">pinMode()</text>
+                    
+                    <!-- setup -> lcd.init -->
+                    <line x1="180" y1="200" x2="180" y2="285" stroke="#999" stroke-width="2"/>
+                    <rect x="110" y="285" width="140" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="6"/>
+                    <text x="180" y="306" font-family="'Courier New', monospace" font-size="13" fill="#15803d" text-anchor="middle">lcd.init()</text>
+                    
+                    <!-- setup -> lcd.backlight -->
+                    <line x1="180" y1="200" x2="180" y2="330" stroke="#999" stroke-width="2"/>
+                    <rect x="110" y="330" width="140" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="6"/>
+                    <text x="180" y="351" font-family="'Courier New', monospace" font-size="13" fill="#15803d" text-anchor="middle">lcd.backlight()</text>
+                    
+                    <!-- setup -> lcd.clear -->
+                    <line x1="180" y1="200" x2="180" y2="375" stroke="#999" stroke-width="2"/>
+                    <rect x="110" y="375" width="140" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="6"/>
+                    <text x="180" y="396" font-family="'Courier New', monospace" font-size="13" fill="#15803d" text-anchor="middle">lcd.clear()</text>
+                    
+                    <!-- setup -> lcd.setCursor × 4 -->
+                    <line x1="260" y1="200" x2="260" y2="420" stroke="#999" stroke-width="2"/>
+                    <rect x="190" y="420" width="140" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="6"/>
+                    <text x="260" y="441" font-family="'Courier New', monospace" font-size="13" fill="#15803d" text-anchor="middle">lcd.setCursor() ×4</text>
+                    
+                    <!-- setup -> lcd.print × 4 -->
+                    <line x1="260" y1="200" x2="260" y2="465" stroke="#999" stroke-width="2"/>
+                    <rect x="190" y="465" width="140" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="6"/>
+                    <text x="260" y="486" font-family="'Courier New', monospace" font-size="13" fill="#15803d" text-anchor="middle">lcd.print() ×4</text>
+                    
+                    <!-- loop関数 (第2階層) -->
+                    <rect x="390" y="155" width="260" height="45" fill="#d1fae5" stroke="#10b981" stroke-width="2.5" rx="8"/>
+                    <text x="520" y="175" font-family="'Courier New', monospace" font-size="15" fill="#10b981" text-anchor="middle" font-weight="bold">loop()</text>
+                    <text x="520" y="190" font-family="Arial" font-size="10" fill="#666" text-anchor="middle">[無限ループ]</text>
+                    
+                    <!-- loop -> loopCounter++ -->
+                    <line x1="440" y1="200" x2="440" y2="240" stroke="#999" stroke-width="2"/>
+                    <rect x="370" y="240" width="140" height="32" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="6"/>
+                    <text x="440" y="261" font-family="'Courier New', monospace" font-size="13" fill="#92400e" text-anchor="middle">loopCounter++</text>
+                    
+                    <!-- loop -> lcd.setCursor -->
+                    <line x1="520" y1="200" x2="520" y2="285" stroke="#999" stroke-width="2"/>
+                    <rect x="450" y="285" width="140" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="6"/>
+                    <text x="520" y="306" font-family="'Courier New', monospace" font-size="13" fill="#15803d" text-anchor="middle">lcd.setCursor()</text>
+                    
+                    <!-- loop -> lcd.print × 3 -->
+                    <line x1="520" y1="200" x2="520" y2="330" stroke="#999" stroke-width="2"/>
+                    <rect x="450" y="330" width="140" height="32" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="6"/>
+                    <text x="520" y="351" font-family="'Courier New', monospace" font-size="13" fill="#15803d" text-anchor="middle">lcd.print() ×3</text>
+                    
+                    <!-- loop -> delay -->
+                    <line x1="600" y1="200" x2="600" y2="375" stroke="#999" stroke-width="2"/>
+                    <rect x="530" y="375" width="140" height="32" fill="#e0e7ff" stroke="#6366f1" stroke-width="2" rx="6"/>
+                    <text x="600" y="396" font-family="'Courier New', monospace" font-size="13" fill="#4338ca" text-anchor="middle">delay()</text>
+                    
+                    <!-- 凡例 -->
+                    <g transform="translate(20, 520)">
+                        <text x="0" y="-10" font-family="Arial" font-size="12" fill="#333" font-weight="bold">凡例:</text>
+                        <rect x="40" y="-22" width="15" height="15" fill="#e0e7ff" stroke="#667eea" stroke-width="1.5" rx="3"/>
+                        <text x="60" y="-10" font-family="Arial" font-size="11" fill="#666">第1階層 (Framework)</text>
+                        
+                        <rect x="200" y="-22" width="15" height="15" fill="#f3e8ff" stroke="#764ba2" stroke-width="1.5" rx="3"/>
+                        <text x="220" y="-10" font-family="Arial" font-size="11" fill="#666">第2階層 (User)</text>
+                        
+                        <rect x="340" y="-22" width="15" height="15" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5" rx="3"/>
+                        <text x="360" y="-10" font-family="Arial" font-size="11" fill="#666">LCD制御</text>
+                        
+                        <rect x="450" y="-22" width="15" height="15" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="1.5" rx="3"/>
+                        <text x="470" y="-10" font-family="Arial" font-size="11" fill="#666">GPIO制御</text>
+                        
+                        <rect x="560" y="-22" width="15" height="15" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" rx="3"/>
+                        <text x="580" y="-10" font-family="Arial" font-size="11" fill="#666">変数操作</text>
+                    </g>
+                </svg>
+            </div>
+            
+            <!-- MISRA-C準拠 -->
+            <div class="section">
+                <h2>✅ MISRA-C準拠</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ルール</th>
+                            <th>内容</th>
+                            <th>対応状況</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rule 2.3, 2.5</td>
+                            <td>マジックナンバーを定数として定義</td>
+                            <td><span class="badge badge-success">✓ 準拠</span></td>
+                        </tr>
+                        <tr>
+                            <td>Rule 8.1</td>
+                            <td>関数プロトタイプ宣言</td>
+                            <td><span class="badge badge-success">✓ 準拠</span></td>
+                        </tr>
+                        <tr>
+                            <td>Rule 8.2</td>
+                            <td>関数パラメータにvoid明示</td>
+                            <td><span class="badge badge-success">✓ 準拠</span></td>
+                        </tr>
+                        <tr>
+                            <td>Rule 8.4</td>
+                            <td>static constで内部リンケージ定数定義</td>
+                            <td><span class="badge badge-success">✓ 準拠</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- ビルド情報 -->
+            <div class="section">
+                <h2>🔨 ビルド・デプロイ情報</h2>
+                <div class="card">
+                    <h4>コンパイル</h4>
+                    <p><strong>コマンド:</strong></p>
+                    <code>arduino-cli compile --fqbn arduino:renesas_uno:minima led_blink.ino</code>
+                    <p style="margin-top: 10px;"><strong>実行時間:</strong> 1,806 ms</p>
+                </div>
+                
+                <div class="card">
+                    <h4>アップロード</h4>
+                    <p><strong>コマンド:</strong></p>
+                    <code>arduino-cli upload -p COM3 --fqbn arduino:renesas_uno:minima led_blink.ino</code>
+                    <p style="margin-top: 10px;"><strong>実行時間:</strong> 15,498 ms</p>
+                    <p><strong>書き込みツール:</strong> dfu-util 0.11-arduino4</p>
+                </div>
+            </div>
+            
+            <!-- テスト仕様 -->
+            <div class="section">
+                <h2>🧪 テスト仕様</h2>
+                <h3>動作確認項目</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>項目</th>
+                            <th>確認内容</th>
+                            <th>期待結果</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>起動確認</td>
+                            <td>電源投入</td>
+                            <td>LCDに起動メッセージ表示</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>カウンタ動作</td>
+                            <td>1秒待機</td>
+                            <td>カウンタが1増加</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>LCD表示</td>
+                            <td>目視確認</td>
+                            <td>文字が正しく表示される</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>I2C通信</td>
+                            <td>I2Cスキャナで確認</td>
+                            <td>0x27でデバイス検出</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>詳細設計書</strong> - Arduino UNO R4 MINIMA LCD Display Demo</p>
+            <p>Version 1.0 | Generated: 2025-11-14</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">© 2025 All Rights Reserved</p>
+        </div>
+    </div>
+</body>
+</html>

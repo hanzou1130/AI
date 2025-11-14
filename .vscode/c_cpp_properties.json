@@ -1,0 +1,46 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/cores/arduino",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/cores/arduino/api",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/cores/arduino/tinyusb",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/ra",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/ra/fsp/inc",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/ra/fsp/inc/api",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/ra/fsp/inc/instances",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/ra_cfg",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/ra_gen",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/arm-none-eabi/include/c++/7.2.1",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/arm-none-eabi/include/c++/7.2.1/arm-none-eabi",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/arm-none-eabi/include",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/lib/gcc/arm-none-eabi/7.2.1/include",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/lib/gcc/arm-none-eabi/7.2.1/include-fixed"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "ARDUINO=10607",
+                "ARDUINO_MINIMA",
+                "ARDUINO_ARCH_RENESAS_UNO",
+                "ARDUINO_FSP",
+                "BOARD_NAME=\"MINIMA\"",
+                "__CORTEX_M4",
+                "__FPU_PRESENT"
+            ],
+            "windowsSdkVersion": "10.0.22621.0",
+            "compilerPath": "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/arm-none-eabi-g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm",
+            "forcedInclude": []
+        }
+    ],
+    "version": 4
+}
