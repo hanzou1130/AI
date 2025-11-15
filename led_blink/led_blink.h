@@ -1,14 +1,14 @@
 // Arduino UNO R4 MINIMA LED Blink - Header File
-// LED点滅制御用ヘッダ
+// Header for LED blink control
 
-#ifndef LED_BLINK_H
-#define LED_BLINK_H
+#include    <Arduino.h>
+#include    <LiquidCrystal_I2C.h>
 
-#include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
+#ifndef    LED_BLINK_H
+#define    LED_BLINK_H
 
-// 関数プロトタイプ宣言
-void setup ( void );
-void loop ( void );
+// Function prototypes
+void   setup    ( void );
+void   loop     ( void );
 
-#endif // LED_BLINK_H
+#endif    // LED_BLINK_H

@@ -1,55 +1,55 @@
 // Arduino UNO R4 MINIMA - 20x4 I2C LCD Display Demo
-// SunFounder 20x4 I2C LCDにカウンタを表示
-// 1秒ごとにカウンタをインクリメントして4行目に表示
+// Display a counter on SunFounder 20x4 I2C LCD
+// Increment counter every second and show on 4th line
 
 #include <Arduino.h>
 #include "led_blink.h"
 
-// 定数定義
-static const uint8_t LED_PIN        = LED_BUILTIN;                              // LED出力ピン
-static const uint16_t DELAY_TIME_MS = 50U;                                      // 遅延時間 (ミリ秒)
-static const uint8_t LCD_I2C_ADDR   = 0x27;                                     // LCDのI2Cアドレス (通常0x27または0x3F)
-static const uint8_t LCD_COLS       = 20U;                                      // LCD列数
-static const uint8_t LCD_ROWS       = 4U;                                       // LCD行数
+// Constant definitions
+static const uint8_t LED_PIN        = LED_BUILTIN;                              // LED output pin
+static const uint16_t DELAY_TIME_MS = 50U;                                      // Delay time (milliseconds)
+static const uint8_t LCD_I2C_ADDR   = 0x27;                                     // LCD I2C address (commonly 0x27 or 0x3F)
+static const uint8_t LCD_COLS       = 20U;                                      // LCD column count
+static const uint8_t LCD_ROWS       = 4U;                                       // LCD row count
 
-// グローバルオブジェクト
-LiquidCrystal_I2C lcd ( LCD_I2C_ADDR, LCD_COLS, LCD_ROWS );                     // LCDオブジェクト
+// Global object
+LiquidCrystal_I2C lcd ( LCD_I2C_ADDR, LCD_COLS, LCD_ROWS );                     // LCD object
 
-// グローバル変数
-static uint32_t loopCounter         = 0U;                                       // ループカウンタ
+// Global variable
+static uint32_t loopCounter         = 0U;                                       // Loop counter
 
-// 実装部
+// Implementation section
 void setup ( void )
 {
-  pinMode       ( LED_PIN, OUTPUT );                                            // LEDピンを出力モードに設定
+  pinMode       ( LED_PIN, OUTPUT );                                            // Set LED pin to output mode
 
-  // LCD初期化
-  lcd.init      ();                                                             // LCD初期化（UNO R4対応）
-  lcd.backlight ();                                                             // バックライトON
-  lcd.clear     ();                                                             // 画面クリア
+  // LCD initialization
+  lcd.init      ();                                                             // Initialize LCD (UNO R4 compatible)
+  lcd.backlight ();                                                             // Turn backlight ON
+  lcd.clear     ();                                                             // Clear display
 
-  // 起動メッセージ表示
-  lcd.setCursor ( 0, 0 );                                                       // 1行目
+  // Boot messages
+  lcd.setCursor ( 0, 0 );                                                       // Line 1
   lcd.print     ( "Arduino UNO R4" );
-  lcd.setCursor ( 0, 1 );                                                       // 2行目
+  lcd.setCursor ( 0, 1 );                                                       // Line 2
   lcd.print     ( "LED Blink 100ms" );
-  lcd.setCursor ( 0, 2 );                                                       // 3行目
+  lcd.setCursor ( 0, 2 );                                                       // Line 3
   lcd.print     ( "20x4 I2C LCD" );
-  lcd.setCursor ( 0, 3 );                                                       // 4行目
+  lcd.setCursor ( 0, 3 );                                                       // Line 4
   lcd.print     ( "Status: Running" );
 }
 
 void loop ( void )
 {
-  // ループカウンタをインクリメント
+  // Increment loop counter
   loopCounter++;
 
-  // LCD表示更新（4行目にカウンタ表示）
-  lcd.setCursor ( 0, 3 );                                                       // 4行目
+  // Update LCD (show counter on 4th line)
+  lcd.setCursor ( 0, 3 );                                                       // Line 4
   lcd.print     ( "Count: " );
   lcd.print     ( loopCounter );
-  lcd.print     ( "        " );                                                 // 余分な文字をクリア
+  lcd.print     ( "        " );                                                 // Clear leftover characters
 
-  // 待機
-  delay         ( 1000 );                                                       // 1秒待機
+  // Wait
+  delay         ( 1000 );                                                       // Wait 1 second
 }
