@@ -3,11 +3,7 @@
 // Increment counter every second and show on 4th line
 
 #include <Arduino.h>
-<<<<<<< HEAD
 #include "I2C_Display.h"
-=======
-#include "led_blink.h"
->>>>>>> 8c043c8f671a3da191a95531b8bb67d6d83829be
 
 // Constant definitions
 static const uint8_t LED_PIN        = LED_BUILTIN;                              // LED output pin

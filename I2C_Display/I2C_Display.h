@@ -11,4 +11,4 @@
 void   setup    ( void );
 void   loop     ( void );
 
-#endif    // ILED_BLINK_H
+#endif    // I2C_DISPLAY_H

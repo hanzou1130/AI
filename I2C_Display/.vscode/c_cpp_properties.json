@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/cores/arduino",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/cores/arduino/api",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/cores/arduino/tinyusb",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/variants/MINIMA/includes/**",
+                "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/hardware/renesas_uno/1.5.1/libraries/**",
+                "C:/Users/baoma/AppData/Local/Arduino15/libraries/**",
+                "C:/Users/baoma/OneDrive/ドキュメント/Arduino/libraries/**"
+            ],
+            "defines": [
+                "ARDUINO=10819",
+                "ARDUINO_MINIMA",
+                "ARDUINO_ARCH_RENESAS_UNO",
+                "ARDUINO_FSP",
+                "BOARD_NAME=\"MINIMA\"",
+                "_XOPEN_SOURCE=700"
+            ],
+            "compilerPath": "C:/Users/baoma/AppData/Local/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/arm-none-eabi-g++.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}
