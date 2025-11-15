@@ -4,11 +4,11 @@
 #include    <Arduino.h>
 #include    <LiquidCrystal_I2C.h>
 
-#ifndef    LED_BLINK_H
-#define    LED_BLINK_H
+#ifndef    I2C_DISPLAY_H
+#define    I2C_DISPLAY_H
 
 // Function prototypes
 void   setup    ( void );
 void   loop     ( void );
 
-#endif    // LED_BLINK_H
+#endif    // ILED_BLINK_H

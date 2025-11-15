@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Arduino: Build (UNO R4 Minima)",
+			"type": "shell",
+			"command": "arduino-cli compile --fqbn arduino:renesas_uno:minima .",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Arduino: Upload (UNO R4 Minima)",
+			"type": "shell",
+			"command": "arduino-cli upload -p COM3 --fqbn arduino:renesas_uno:minima .",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}
