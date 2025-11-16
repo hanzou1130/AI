@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200">
+  <style>
+    .box { fill: #fff; stroke: #2563eb; stroke-width:2px; rx:8; }
+    .alt { fill:#f0f7ff; }
+    .text { font-family: Arial, sans-serif; font-size:13px; fill:#111; }
+    .title { font-size:16px; font-weight:700; fill:#0b3b75; }
+    .arrow { stroke:#333; stroke-width:2px; fill:none; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+  <text x="450" y="26" text-anchor="middle" class="title">SystemInit Detailed Flow</text>
+
+  <g transform="translate(40,60)">
+    <rect x="150" y="10" width="600" height="48" class="box"/>
+    <text x="450" y="40" text-anchor="middle" class="text">SystemInit()</text>
+    <path class="arrow" d="M450 58 L450 100" />
+
+    <rect x="120" y="100" width="660" height="56" class="box alt"/>
+    <text x="450" y="132" text-anchor="middle" class="text">Enable MainOSC (MOSCE = 0x01)</text>
+    <path class="arrow" d="M450 156 L450 200" />
+
+    <rect x="120" y="200" width="660" height="64" class="box"/>
+    <text x="450" y="232" text-anchor="middle" class="text">Wait for MOSC stable (poll MOSCS.ACT)</text>
+    <path class="arrow" d="M450 264 L450 310" />
+
+    <rect x="120" y="310" width="660" height="64" class="box alt"/>
+    <text x="450" y="342" text-anchor="middle" class="text">Configure PLL (PLLC0) and enable</text>
+    <text x="450" y="362" text-anchor="middle" class="text" style="font-size:12px;">Set multiplier/dividers as required</text>
+    <path class="arrow" d="M450 376 L450 420" />
+
+    <rect x="120" y="420" width="660" height="56" class="box"/>
+    <text x="450" y="450" text-anchor="middle" class="text">Wait for PLL stable (poll PLLS.ACT)</text>
+    <path class="arrow" d="M450 474 L450 520" />
+
+    <rect x="120" y="520" width="660" height="72" class="box alt"/>
+    <text x="450" y="552" text-anchor="middle" class="text">Configure clock dividers & selectors (CKSC registers)</text>
+    <text x="450" y="572" text-anchor="middle" class="text" style="font-size:12px;">Set CPU / peripheral sources and wait for ACT</text>
+    <path class="arrow" d="M450 592 L450 640" />
+
+    <rect x="120" y="640" width="660" height="64" class="box"/>
+    <text x="450" y="672" text-anchor="middle" class="text">Optional: Disable/refresh Watchdog, Unlock protected regs</text>
+    <path class="arrow" d="M450 688 L450 740" />
+
+    <rect x="120" y="740" width="660" height="64" class="box alt"/>
+    <text x="450" y="772" text-anchor="middle" class="text">Initialize Interrupt controller (mask, set priority lowest)</text>
+    <text x="450" y="792" text-anchor="middle" class="text" style="font-size:12px;">for i in 0..511: EIC[i] = masked, priority = 15</text>
+    <path class="arrow" d="M450 804 L450 860" />
+
+    <rect x="120" y="860" width="660" height="56" class="box"/>
+    <text x="450" y="892" text-anchor="middle" class="text">Update global clock vars: g_system_clock, g_peripheral_clock</text>
+    <path class="arrow" d="M450 908 L450 960" />
+
+    <rect x="120" y="960" width="660" height="56" class="box alt"/>
+    <text x="450" y="992" text-anchor="middle" class="text">Return to caller</text>
+  </g>
+</svg>

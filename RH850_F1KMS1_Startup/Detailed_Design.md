@@ -140,3 +140,15 @@ rh850-elf-objcopy -O ihex firmware.elf firmware.hex
 - BSS をゼロクリアし、ROM 上の初期化データを RAM にコピーします。
 - `SystemInit()` を実行してクロック等の初期化を行い、割り込みを有効化して `main()` に移行します。
 
+### 詳細フロー図
+
+1) 起動メインフロー（細分化）：
+
+![Detailed Startup Flow](diagrams/startup_flowchart_detailed.svg)
+
+2) `SystemInit()` 詳細フロー：
+
+![SystemInit Flow](diagrams/systeminit_flowchart.svg)
+
+上記図は `SystemInit()` の内部ステップ（MainOSC の起動、PLL 設定、分周器の切替、割り込みコントローラ初期化など）を順序立てて表現しています。
+
