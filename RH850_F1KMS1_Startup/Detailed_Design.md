@@ -152,3 +152,17 @@ rh850-elf-objcopy -O ihex firmware.elf firmware.hex
 
 上記図は `SystemInit()` の内部ステップ（MainOSC の起動、PLL 設定、分周器の切替、割り込みコントローラ初期化など）を順序立てて表現しています。
 
+### フェイル時の分岐（追加）
+
+起動・初期化処理で発生し得る失敗ケースを想定した分岐図を追加しました。
+
+- **MainOSC が安定しない場合**: 内部 RC にフォールバックするか、所定回数再試行します。再試行後も失敗する場合はセーフモード（エラーLED点灯やホストからの更新待ち）に遷移します。
+- **PLL ロック失敗**: 再試行や低速クロックへのフォールバックを検討し、復旧不能なら安全に停止またはセーフクロックで継続します。
+- **データコピー／CRC 検証失敗**: イメージ破損の可能性があるためブートローダに戻してリカバリを試行します。
+- **ウォッチドッグ関連**: 初期化中にウォッチドッグがタイムアウトしないようにリフレッシュまたは一時停止処理が必要です（実装依存）。
+
+図面:
+
+![SystemInit with errors](diagrams/systeminit_flowchart_with_errors.svg)
+![Startup with errors](diagrams/startup_flowchart_with_errors.svg)
+

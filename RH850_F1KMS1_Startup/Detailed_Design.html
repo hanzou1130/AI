@@ -49,6 +49,10 @@
   <img src="diagrams/startup_flowchart_detailed.svg" alt="Detailed Startup Flow" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;" />
   <p>`SystemInit()` の詳細フロー</p>
   <img src="diagrams/systeminit_flowchart.svg" alt="SystemInit Flow" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;" />
+  <h3>フェイル時の分岐</h3>
+  <p>起動時／初期化時の代表的な失敗（MOSC未安定、PLLロック失敗、データ不一致、ウォッチドッグ）に対する分岐例を示します。</p>
+  <img src="diagrams/systeminit_flowchart_with_errors.svg" alt="SystemInit with errors" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;" />
+  <img src="diagrams/startup_flowchart_with_errors.svg" alt="Startup with errors" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;" />
   <h2>BSS と Data 初期化</h2>
   <p>BSS をワード単位で 0 埋め、データを ROM から RAM へワードコピーします。アライメントとセクションアドレスがリンカ設定と一致することを確認してください。</p>
   <h2>SystemInit の詳細</h2>
