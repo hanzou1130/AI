@@ -261,10 +261,10 @@
         <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
       </marker>
     </defs>
-    <text x="500" y="30" text-anchor="middle" class="title">Startup Flow with Error Branches</text>
+    <text x="500" y="30" text-anchor="middle" class="title">起動フロー（エラー分岐あり）</text>
     <g transform="translate(40,60)">
       <rect x="340" y="10" width="300" height="28" class="box"/>
-      <text x="490" y="24" text-anchor="middle" dominant-baseline="middle" class="text">Reset Vector (_RESET)</text>
+      <text x="490" y="24" text-anchor="middle" dominant-baseline="middle" class="text">リセットベクタ (_RESET)</text>
       <path class="arrow" d="M490 60 L490 110" />
 
       <rect x="340" y="110" width="300" height="28" class="alt"/>
@@ -272,47 +272,47 @@
       <path class="arrow" d="M490 170 L490 210" />
 
       <rect x="340" y="210" width="300" height="28" class="box"/>
-      <text x="490" y="224" text-anchor="middle" dominant-baseline="middle" class="text">Disable interrupts; Init SP</text>
+      <text x="490" y="224" text-anchor="middle" dominant-baseline="middle" class="text">割り込み無効化・SP初期化 (di, SP設定)</text>
       <path class="arrow" d="M490 268 L490 310" />
 
       <rect x="340" y="310" width="300" height="28" class="alt"/>
-      <text x="490" y="324" text-anchor="middle" dominant-baseline="middle" class="text">BSS Clear; Data copy (ROM→RAM)</text>
+      <text x="490" y="324" text-anchor="middle" dominant-baseline="middle" class="text">BSSクリア・データコピー (ROM→RAM)</text>
       <path class="arrow" d="M490 378 L490 430" />
 
       <rect x="340" y="430" width="300" height="28" class="box"/>
-      <text x="490" y="444" text-anchor="middle" dominant-baseline="middle" class="text">Optional: Verify data (CRC)</text>
+      <text x="490" y="444" text-anchor="middle" dominant-baseline="middle" class="text">オプション: データ検証 (CRC)</text>
       <path class="arrow" d="M490 498 L490 540" />
 
       <rect x="340" y="540" width="300" height="28" class="alt"/>
-      <text x="490" y="554" text-anchor="middle" dominant-baseline="middle" class="text">Verify OK</text>
+      <text x="490" y="554" text-anchor="middle" dominant-baseline="middle" class="text">検証OK → 続行</text>
       <rect x="340" y="600" width="300" height="28" class="fail"/>
-      <text x="490" y="614" text-anchor="middle" dominant-baseline="middle" class="text">Verify FAIL → bootloader / restore</text>
+      <text x="490" y="614" text-anchor="middle" dominant-baseline="middle" class="text">検証失敗 → ブートローダ / リストア</text>
 
       <path class="arrow" d="M260 614 L340 614" />
       <path class="arrow" d="M640 614 L640 660" />
       <path class="arrow" d="M640 660 L490 700" />
 
       <rect x="340" y="630" width="300" height="28" class="box"/>
-      <text x="490" y="644" text-anchor="middle" dominant-baseline="middle" class="text">Call SystemInit()</text>
+      <text x="490" y="644" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit() 呼び出し</text>
       <path class="arrow" d="M490 696 L490 740" />
 
       <rect x="340" y="740" width="300" height="28" class="box"/>
-      <text x="490" y="754" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit OK</text>
+      <text x="490" y="754" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit 成功</text>
       <rect x="340" y="800" width="300" height="28" class="fail"/>
-      <text x="490" y="814" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit FAIL → Safe Mode / Halt</text>
+      <text x="490" y="814" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit 失敗 → セーフモード / 停止</text>
 
       <path class="arrow" d="M300 814 L340 814" />
       <path class="arrow" d="M640 814 L640 840" />
 
       <rect x="340" y="840" width="300" height="28" class="alt"/>
-      <text x="490" y="854" text-anchor="middle" dominant-baseline="middle" class="text">Enable interrupts; Jump to main()</text>
+      <text x="490" y="854" text-anchor="middle" dominant-baseline="middle" class="text">割り込み有効化・main()へジャンプ (ei, jmp)</text>
       <path class="arrow" d="M490 896 L490 940" />
 
       <rect x="340" y="940" width="300" height="28" class="box"/>
-      <text x="490" y="954" text-anchor="middle" dominant-baseline="middle" class="text">main() — Application (正常動作)</text>
+      <text x="490" y="954" text-anchor="middle" dominant-baseline="middle" class="text">main() — アプリケーション（正常動作）</text>
 
       <rect x="340" y="1040" width="300" height="28" class="fail"/>
-      <text x="490" y="1054" text-anchor="middle" dominant-baseline="middle" class="text">Safe Mode / Error LED / Wait for host update</text>
+      <text x="490" y="1054" text-anchor="middle" dominant-baseline="middle" class="text">セーフモード / エラーLED / ホスト更新待ち</text>
     </g>
 
     <text x="500" y="1360" text-anchor="middle" class="text">注: フェイルパスは製品要件に合わせて設計してください。例: 再試行回数・フェイル時の挙動・ログ出力方法など。</text>
@@ -334,44 +334,44 @@
         <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
       </marker>
     </defs>
-    <text x="500" y="30" text-anchor="middle" class="title">Detailed Startup Flow (細分化)</text>
+    <text x="500" y="30" text-anchor="middle" class="title">起動フロー詳細（細分化）</text>
     <g transform="translate(40,60)">
       <rect x="340" y="10" width="300" height="28" class="box"/>
-      <text x="500" y="24" text-anchor="middle" dominant-baseline="middle" class="text">Reset Vector (_RESET)</text>
+      <text x="500" y="24" text-anchor="middle" dominant-baseline="middle" class="text">リセットベクタ (_RESET)</text>
       <path class="arrow" d="M500 44 L500 104" />
       <rect x="340" y="100" width="300" height="28" class="box alt"/>
       <text x="500" y="114" text-anchor="middle" dominant-baseline="middle" class="text">_start (cstartup.asm) — 初期化エントリ</text>
       <path class="arrow" d="M500 134 L500 194" />
       <rect x="340" y="200" width="300" height="28" class="box"/>
-      <text x="500" y="214" text-anchor="middle" dominant-baseline="middle" class="text">Disable interrupts (di)</text>
+      <text x="500" y="214" text-anchor="middle" dominant-baseline="middle" class="text">割り込み無効化 (di)</text>
       <path class="arrow" d="M500 234 L500 294" />
       <rect x="340" y="290" width="300" height="28" class="box alt"/>
-      <text x="500" y="304" text-anchor="middle" dominant-baseline="middle" class="text">Initialize SP = SP_INIT (0xFEE28000)</text>
-      <text x="500" y="322" text-anchor="middle" class="text" style="font-size:11px;">(hi/lo movea を使用)</text>
+      <text x="500" y="304" text-anchor="middle" dominant-baseline="middle" class="text">SP初期化 = 0xFEE28000</text>
+      <text x="500" y="322" text-anchor="middle" class="text" style="font-size:11px;">(movhi/movea でr3→sp設定)</text>
       <path class="arrow" d="M500 334 L500 394" />
       <rect x="340" y="400" width="300" height="28" class="box"/>
-      <text x="500" y="414" text-anchor="middle" dominant-baseline="middle" class="text">Clear BSS: for (p=__sbss; p<__ebss; p+=4) *p = 0</text>
-      <text x="500" y="434" text-anchor="middle" class="text" style="font-size:11px;">r6=__sbss, r7=__ebss, r0=0, st.w r0,0[r6]; add 4,r6</text>
+      <text x="500" y="414" text-anchor="middle" dominant-baseline="middle" class="text">BSSクリア: __sbss～__ebss を 0 埋め</text>
+      <text x="500" y="434" text-anchor="middle" class="text" style="font-size:11px;">r6=__sbss, r7=__ebss; st.w r0,0[r6]; add 4,r6 でループ</text>
       <path class="arrow" d="M500 454 L500 514" />
       <rect x="340" y="520" width="300" height="28" class="box alt"/>
-      <text x="500" y="534" text-anchor="middle" dominant-baseline="middle" class="text">Copy .data: for (dst=__sdata; dst<__edata; dst+=4) *dst = *src++</text>
-      <text x="500" y="552" text-anchor="middle" class="text" style="font-size:11px;">r6=__sdata_rom(src), r7=__sdata(dst), r8=__edata, ld.w 0[r6],r9; st.w r9,0[r7]</text>
+      <text x="500" y="534" text-anchor="middle" dominant-baseline="middle" class="text">データコピー: ROM→RAM (__sdata_rom → __sdata)</text>
+      <text x="500" y="552" text-anchor="middle" class="text" style="font-size:11px;">r6=src, r7=dst, r8=end; ld.w/st.w でワードコピー</text>
       <path class="arrow" d="M500 574 L500 634" />
       <rect x="340" y="660" width="300" height="28" class="box"/>
-      <text x="500" y="674" text-anchor="middle" dominant-baseline="middle" class="text">(Optional) Verify data copy / checksum / protect registers</text>
+      <text x="500" y="674" text-anchor="middle" dominant-baseline="middle" class="text">（オプション）データ検証 / CRC / 保護レジスタ設定</text>
       <path class="arrow" d="M500 696 L500 756" />
       <rect x="340" y="780" width="300" height="28" class="box alt"/>
-      <text x="500" y="794" text-anchor="middle" dominant-baseline="middle" class="text">Call SystemInit()</text>
+      <text x="500" y="794" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit() 呼び出し (jarl)</text>
       <path class="arrow" d="M500 816 L500 876" />
       <rect x="340" y="880" width="300" height="28" class="box"/>
-      <text x="500" y="894" text-anchor="middle" dominant-baseline="middle" class="text">Enable interrupts (ei)</text>
+      <text x="500" y="894" text-anchor="middle" dominant-baseline="middle" class="text">割り込み有効化 (ei)</text>
       <path class="arrow" d="M500 916 L500 976" />
       <rect x="340" y="980" width="300" height="28" class="box alt"/>
-      <text x="500" y="994" text-anchor="middle" dominant-baseline="middle" class="text">Jump to main() (jmp [addr])</text>
+      <text x="500" y="994" text-anchor="middle" dominant-baseline="middle" class="text">main() へジャンプ (jmp [r6])</text>
       <path class="arrow" d="M500 1016 L500 1076" />
       <rect x="340" y="1080" width="300" height="28" class="box"/>
       <text x="500" y="1094" text-anchor="middle" dominant-baseline="middle" class="text">main() — アプリケーション開始</text>
-      <text x="500" y="1112" text-anchor="middle" class="text" style="font-size:11px;">(GPIO 初期化 → ループ → LED toggle 等)</text>
+      <text x="500" y="1112" text-anchor="middle" class="text" style="font-size:11px;">(GPIO初期化 → メインループ → LED制御等)</text>
     </g>
     <text x="500" y="1500" text-anchor="middle" class="text">注: 例外ベクタは `__exception_table` に配置。必要に応じてハンドラを割当ててください。</text>
   </svg>
@@ -391,40 +391,40 @@
         <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
       </marker>
     </defs>
-    <text x="450" y="26" text-anchor="middle" class="title">SystemInit Detailed Flow</text>
+    <text x="450" y="26" text-anchor="middle" class="title">SystemInit 詳細フロー</text>
     <g transform="translate(40,60)">
       <rect x="270" y="10" width="300" height="28" class="box"/>
-      <text x="450" y="24" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit()</text>
+      <text x="450" y="24" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit() エントリ</text>
       <path class="arrow" d="M450 44 L450 104" />
       <rect x="270" y="100" width="300" height="28" class="box alt"/>
-      <text x="450" y="114" text-anchor="middle" dominant-baseline="middle" class="text">Enable MainOSC (MOSCE = 0x01)</text>
+      <text x="450" y="114" text-anchor="middle" dominant-baseline="middle" class="text">MainOSC 有効化 (MOSCE = 0x01)</text>
       <path class="arrow" d="M450 134 L450 194" />
       <rect x="270" y="200" width="300" height="28" class="box"/>
-      <text x="450" y="214" text-anchor="middle" dominant-baseline="middle" class="text">Wait for MOSC stable (poll MOSCS.ACT)</text>
+      <text x="450" y="214" text-anchor="middle" dominant-baseline="middle" class="text">MOSC 安定化待ち (MOSCS.ACT ポーリング)</text>
       <path class="arrow" d="M450 234 L450 294" />
       <rect x="270" y="310" width="300" height="28" class="box alt"/>
-      <text x="450" y="324" text-anchor="middle" dominant-baseline="middle" class="text">Configure PLL (PLLC0) and enable</text>
-      <text x="450" y="342" text-anchor="middle" class="text" style="font-size:11px;">Set multiplier/dividers as required</text>
+      <text x="450" y="324" text-anchor="middle" dominant-baseline="middle" class="text">PLL 設定 (PLLC0) と有効化</text>
+      <text x="450" y="342" text-anchor="middle" class="text" style="font-size:11px;">乗算器/除算器設定 (16MHz×15=240MHz)</text>
       <path class="arrow" d="M450 356 L450 416" />
       <rect x="270" y="420" width="300" height="28" class="box"/>
-      <text x="450" y="434" text-anchor="middle" dominant-baseline="middle" class="text">Wait for PLL stable (poll PLLS.ACT)</text>
+      <text x="450" y="434" text-anchor="middle" dominant-baseline="middle" class="text">PLL 安定化待ち (PLLS.ACT ポーリング)</text>
       <path class="arrow" d="M450 454 L450 514" />
       <rect x="270" y="520" width="300" height="28" class="box alt"/>
-      <text x="450" y="534" text-anchor="middle" dominant-baseline="middle" class="text">Configure clock dividers & selectors (CKSC registers)</text>
-      <text x="450" y="552" text-anchor="middle" class="text" style="font-size:11px;">Set CPU / peripheral sources and wait for ACT</text>
+      <text x="450" y="534" text-anchor="middle" dominant-baseline="middle" class="text">クロック分周器設定 (CKSC レジスタ)</text>
+      <text x="450" y="552" text-anchor="middle" class="text" style="font-size:11px;">CPU/ペリフェラルソース選択とACT待ち</text>
       <path class="arrow" d="M450 574 L450 634" />
       <rect x="270" y="640" width="300" height="28" class="box"/>
-      <text x="450" y="654" text-anchor="middle" dominant-baseline="middle" class="text">Optional: Disable/refresh Watchdog, Unlock protected regs</text>
+      <text x="450" y="654" text-anchor="middle" dominant-baseline="middle" class="text">オプション: ウォッチドッグ無効/保護レジスタアンロック</text>
       <path class="arrow" d="M450 674 L450 734" />
       <rect x="270" y="740" width="300" height="28" class="box alt"/>
-      <text x="450" y="754" text-anchor="middle" dominant-baseline="middle" class="text">Initialize Interrupt controller (mask, set priority lowest)</text>
-      <text x="450" y="772" text-anchor="middle" class="text" style="font-size:11px;">for i in 0..511: EIC[i] = masked, priority = 15</text>
+      <text x="450" y="754" text-anchor="middle" dominant-baseline="middle" class="text">割り込みコントローラ初期化 (マスク, 優先度設定)</text>
+      <text x="450" y="772" text-anchor="middle" class="text" style="font-size:11px;">for i in 0..511: EIC[i] = マスク, priority = 15</text>
       <path class="arrow" d="M450 788 L450 848" />
       <rect x="270" y="860" width="300" height="28" class="box"/>
-      <text x="450" y="874" text-anchor="middle" dominant-baseline="middle" class="text">Update g_system_clock / g_peripheral_clock</text>
+      <text x="450" y="874" text-anchor="middle" dominant-baseline="middle" class="text">グローバル変数更新: g_system_clock / g_peripheral_clock</text>
       <path class="arrow" d="M450 894 L450 954" />
       <rect x="270" y="960" width="300" height="28" class="box alt"/>
-      <text x="450" y="974" text-anchor="middle" dominant-baseline="middle" class="text">Return to caller</text>
+      <text x="450" y="974" text-anchor="middle" dominant-baseline="middle" class="text">呼び出し元へ復帰 (cstartupへ)</text>
     </g>
   </svg>
   <h3>フェイル時の分岐</h3>
@@ -445,62 +445,62 @@
         <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
       </marker>
     </defs>
-    <text x="600" y="36" text-anchor="middle" class="title">SystemInit Flow with Error Handling</text>
+    <text x="600" y="36" text-anchor="middle" class="title">SystemInit フロー（エラーハンドリングあり）</text>
     <g transform="translate(40,70)">
       <rect x="450" y="10" width="300" height="28" class="box"/>
-      <text x="600" y="40" text-anchor="middle" class="text">SystemInit()</text>
+      <text x="600" y="40" text-anchor="middle" class="text">SystemInit() エントリ</text>
       <path class="arrow" d="M600 58 L600 110" />
       <rect x="450" y="110" width="300" height="28" class="alt"/>
-      <text x="600" y="142" text-anchor="middle" class="text">Enable MainOSC (MOSCE=0x01)</text>
+      <text x="600" y="142" text-anchor="middle" class="text">MainOSC 有効化 (MOSCE=0x01)</text>
       <path class="arrow" d="M600 168 L600 220" />
       <rect x="450" y="220" width="300" height="28" class="box"/>
-      <text x="370" y="252" text-anchor="middle" class="text">Wait MOSC stable (MOSCS.ACT)</text>
+      <text x="370" y="252" text-anchor="middle" class="text">MOSC 安定化待ち (MOSCS.ACT)</text>
       <path class="arrow" d="M370 276 L370 320" />
       <rect x="450" y="320" width="300" height="28" class="alt"/>
-      <text x="370" y="352" text-anchor="middle" class="text">MOSC OK → continue</text>
+      <text x="370" y="352" text-anchor="middle" class="text">MOSC OK → 続行</text>
       <path class="arrow" d="M370 376 L600 376" />
       <rect x="620" y="320" width="300" height="28" class="fail"/>
-      <text x="830" y="352" text-anchor="middle" class="text">MOSC FAIL → retry / fallback</text>
-      <text x="830" y="370" text-anchor="middle" class="text" style="font-size:12px;">Try internal RC or retry N times</text>
+      <text x="830" y="352" text-anchor="middle" class="text">MOSC 失敗 → リトライ / フォールバック</text>
+      <text x="830" y="370" text-anchor="middle" class="text" style="font-size:12px;">内部RC試行またはN回リトライ</text>
       <path class="arrow" d="M830 384 L830 430" />
       <rect x="620" y="430" width="300" height="28" class="fail"/>
-      <text x="830" y="462" text-anchor="middle" class="text">Fallback failed → enter Safe Mode / LED error</text>
+      <text x="830" y="462" text-anchor="middle" class="text">フォールバック失敗 → セーフモード / LEDエラー</text>
       <path class="arrow" d="M830 498 L600 498" />
       <rect x="450" y="376" width="300" height="28" class="box alt"/>
-      <text x="600" y="408" text-anchor="middle" class="text">Configure PLL (PLLC0) and enable</text>
+      <text x="600" y="408" text-anchor="middle" class="text">PLL 設定 (PLLC0) と有効化</text>
       <path class="arrow" d="M600 440 L600 500" />
       <rect x="450" y="500" width="300" height="28" class="box"/>
-      <text x="600" y="532" text-anchor="middle" class="text">Wait PLL stable (PLLS.ACT)</text>
+      <text x="600" y="532" text-anchor="middle" class="text">PLL 安定化待ち (PLLS.ACT)</text>
       <path class="arrow" d="M600 556 L600 620" />
       <rect x="450" y="556" width="300" height="28" class="fail"/>
-      <text x="290" y="588" text-anchor="middle" class="text">PLL FAIL → retry / reduce frequency</text>
-      <text x="290" y="606" text-anchor="middle" class="text" style="font-size:12px;">If persistent, fallback to safe clock or halt</text>
+      <text x="290" y="588" text-anchor="middle" class="text">PLL 失敗 → リトライ / 周波数低下</text>
+      <text x="290" y="606" text-anchor="middle" class="text" style="font-size:12px;">持続する場合はセーフクロックまたは停止</text>
       <path class="arrow" d="M290 620 L600 620" />
       <rect x="450" y="620" width="300" height="28" class="alt"/>
-      <text x="600" y="652" text-anchor="middle" class="text">Configure clock dividers & selectors (CKSC registers)</text>
-      <text x="600" y="672" text-anchor="middle" class="text" style="font-size:12px;">Set CPU / peripheral sources and wait for ACT</text>
+      <text x="600" y="652" text-anchor="middle" class="text">クロック分周器設定 (CKSC レジスタ)</text>
+      <text x="600" y="672" text-anchor="middle" class="text" style="font-size:12px;">CPU/ペリフェラルソース選択とACT待ち</text>
       <path class="arrow" d="M600 696 L600 760" />
       <rect x="450" y="760" width="300" height="28" class="box"/>
-      <text x="600" y="792" text-anchor="middle" class="text">Unlock protected regs / refresh WDOG if needed</text>
+      <text x="600" y="792" text-anchor="middle" class="text">保護レジスタアンロック / ウォッチドッグ更新</text>
       <path class="arrow" d="M600 812 L600 860" />
       <rect x="450" y="860" width="300" height="28" class="alt"/>
-      <text x="600" y="892" text-anchor="middle" class="text">Optional: Verify data copy / CRC check</text>
+      <text x="600" y="892" text-anchor="middle" class="text">オプション: データコピー検証 / CRCチェック</text>
       <path class="arrow" d="M600 916 L600 960" />
       <rect x="450" y="960" width="300" height="28" class="box"/>
-      <text x="450" y="992" text-anchor="middle" class="text">Verify OK → continue</text>
+      <text x="450" y="992" text-anchor="middle" class="text">検証OK → 続行</text>
       <rect x="450" y="960" width="300" height="28" class="fail"/>
-      <text x="600" y="992" text-anchor="middle" class="text">Verify FAIL → attempt restore / bootloader</text>
-      <text x="600" y="1010" text-anchor="middle" class="text" style="font-size:12px;">Trigger bootloader update or fallback image</text>
+      <text x="600" y="992" text-anchor="middle" class="text">検証失敗 → リストア試行 / ブートローダ</text>
+      <text x="600" y="1010" text-anchor="middle" class="text" style="font-size:12px;">ブートローダ更新またはフォールバックイメージ起動</text>
       <path class="arrow" d="M450 1016 L600 1040" />
       <path class="arrow" d="M830 1036 L600 1060" />
       <rect x="450" y="1060" width="300" height="28" class="box alt"/>
-      <text x="600" y="1092" text-anchor="middle" class="text">Initialize Interrupt controller (mask, set low priority)</text>
+      <text x="600" y="1092" text-anchor="middle" class="text">割り込みコントローラ初期化 (マスク, 優先度設定)</text>
       <path class="arrow" d="M600 1116 L600 1180" />
       <rect x="450" y="1180" width="300" height="28" class="box"/>
-      <text x="600" y="1212" text-anchor="middle" class="text">Update g_system_clock / g_peripheral_clock</text>
+      <text x="600" y="1212" text-anchor="middle" class="text">g_system_clock / g_peripheral_clock 更新</text>
       <path class="arrow" d="M600 1236 L600 1280" />
       <rect x="450" y="1280" width="300" height="28" class="alt"/>
-      <text x="600" y="1312" text-anchor="middle" class="text">Return to caller (cstartup)</text>
+      <text x="600" y="1312" text-anchor="middle" class="text">呼び出し元 (cstartup) へ復帰</text>
     </g>
     <text x="600" y="1560" text-anchor="middle" class="text">注: フェイル時の動作はプロジェクト要件に合わせて調整してください。</text>
   </svg>
