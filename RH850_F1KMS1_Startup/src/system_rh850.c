@@ -119,17 +119,10 @@ void InterruptInit ( void )
    * Configure all external interrupt channels
    * Default: Disabled, Priority = 15 (lowest)
    *------------------------------------------------------------------------*/
-  /* パフォーマンス最適化: 2 エントリずつアンローリングしてループ回数を半減 */
-  eic = (volatile uint16_t *)(EIC_BASE);
-  for ( i = 0; i + 1 < 512; i += 2 )
+  for ( i = 0; i < 512; i++ )
   {
-    eic[i]     = 0x00BF;                /* Mask interrupt, priority 15 */
-    eic[i + 1] = 0x00BF;                /* Next entry */
-  }
-  /* ひとつ余りがあれば処理 */
-  if ( i < 512 )
-  {
-    eic[i] = 0x00BF;
+    eic = (volatile uint16_t *)(EIC_BASE + (i * 2));
+    *eic = 0x00BF;                      /* Mask interrupt, priority 15, table reference */
   }
   
   /* Additional INTC configuration can be added here */
