@@ -60,9 +60,16 @@
   </table>
   <h2>起動シーケンス</h2>
   <ol>
-    <li>リセットベクタへジャンプ（<code>_RESET</code>）</li>
-    <li><code>cstartup.asm::_start</code> 実行（割り込み無効化、SP 初期化、BSS クリア、データコピー、<code>SystemInit()</code> 呼び出し、割り込み有効化、<code>main()</code> へ移行）</li>
+    <li>リセットベクタ（<code>_RESET</code>）から <code>_start</code> へジャンプ</li>
+    <li>割り込み無効化（<code>di</code>）</li>
+    <li>スタックポインタ初期化（<code>SP = 0xFEE28000</code>、movhi/movea 使用）</li>
+    <li>BSS セクションクリア（<code>__sbss</code> ～ <code>__ebss</code>、ワード単位でゼロ埋め）</li>
+    <li>初期化データコピー（<code>__sdata_rom</code> → <code>__sdata</code> ～ <code>__edata</code>、ROM から RAM へワードコピー）</li>
+    <li><code>SystemInit()</code> 呼び出し（クロック設定・割り込みコントローラ初期化）</li>
+    <li>割り込み有効化（<code>ei</code>）</li>
+    <li><code>main()</code> へジャンプしてアプリケーション実行開始</li>
   </ol>
+  <p><strong>注記:</strong> 例外ベクタテーブル（<code>__exception_table</code>）は 512 バイトアライメントで配置され、基本的な例外ハンドラ（RESET, SYSERR, TRAP 等）のエントリを含みます。実運用では各ハンドラを実装してください。</p>
   <h2>フローチャート</h2>
   <p>ブート・スタートアップのフロー図（下図参照）</p>
   <div class="legend" aria-hidden="true">
@@ -94,28 +101,28 @@
       <text x="350" y="134" text-anchor="middle" dominant-baseline="middle" class="text">_start (cstartup.asm)</text>
       <path class="arrow" d="M350 156 L350 202" />
       <rect x="200" y="210" width="300" height="28" class="box"/>
-      <text x="350" y="224" text-anchor="middle" dominant-baseline="middle" class="text">Disable interrupts (di)</text>
+      <text x="350" y="224" text-anchor="middle" dominant-baseline="middle" class="text">割り込み無効化 (di)</text>
       <path class="arrow" d="M350 246 L350 292" />
       <rect x="200" y="300" width="300" height="28" class="box alt"/>
-      <text x="350" y="314" text-anchor="middle" dominant-baseline="middle" class="text">Initialize SP (SP_INIT)</text>
+      <text x="350" y="314" text-anchor="middle" dominant-baseline="middle" class="text">SP 初期化 (0xFEE28000)</text>
       <path class="arrow" d="M350 336 L350 382" />
       <rect x="200" y="390" width="300" height="28" class="box"/>
-      <text x="350" y="404" text-anchor="middle" dominant-baseline="middle" class="text">Clear BSS (__sbss → __ebss)</text>
+      <text x="350" y="404" text-anchor="middle" dominant-baseline="middle" class="text">BSS クリア (r6:__sbss → r7:__ebss)</text>
       <path class="arrow" d="M350 426 L350 472" />
       <rect x="200" y="480" width="300" height="28" class="box alt"/>
-      <text x="350" y="494" text-anchor="middle" dominant-baseline="middle" class="text">Copy initialized data (ROM → RAM)</text>
+      <text x="350" y="494" text-anchor="middle" dominant-baseline="middle" class="text">データコピー (r6:ROM → r7:RAM)</text>
       <path class="arrow" d="M350 516 L350 562" />
       <rect x="200" y="570" width="300" height="28" class="box"/>
-      <text x="350" y="584" text-anchor="middle" dominant-baseline="middle" class="text">Call SystemInit()</text>
+      <text x="350" y="584" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit() 呼び出し (jarl)</text>
       <path class="arrow" d="M350 606 L350 652" />
       <rect x="200" y="660" width="300" height="28" class="box alt"/>
-      <text x="350" y="674" text-anchor="middle" dominant-baseline="middle" class="text">Enable interrupts (ei)</text>
+      <text x="350" y="674" text-anchor="middle" dominant-baseline="middle" class="text">割り込み有効化 (ei)</text>
       <path class="arrow" d="M350 696 L350 742" />
       <rect x="200" y="750" width="300" height="28" class="box"/>
-      <text x="350" y="764" text-anchor="middle" dominant-baseline="middle" class="text">Jump to main()</text>
+      <text x="350" y="764" text-anchor="middle" dominant-baseline="middle" class="text">main() へジャンプ (jmp)</text>
       <path class="arrow" d="M350 786 L350 832" />
       <rect x="200" y="840" width="300" height="28" class="box alt"/>
-      <text x="350" y="854" text-anchor="middle" dominant-baseline="middle" class="text">main() - Application</text>
+      <text x="350" y="854" text-anchor="middle" dominant-baseline="middle" class="text">main() — アプリケーション実行</text>
     </g>
     <text x="450" y="1160" text-anchor="middle" class="text">図: ブートからアプリケーション開始までの主要ステップ</text>
   </svg>
