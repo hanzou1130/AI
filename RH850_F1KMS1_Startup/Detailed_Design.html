@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RH850/F1KM-S1 Detailed Design</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; line-height: 1.6; margin: 24px; color: #111; }
+    h1,h2,h3 { color: #1a4d8f; }
+    pre { background: #f4f4f4; padding: 12px; overflow: auto; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px; }
+  </style>
+</head>
+<body>
+  <h1>RH850/F1KM-S1 Detailed Design</h1>
+  <h2>概要</h2>
+  <p>この文書は RH850/F1KM-S1 向けに作成したスタートアップ一式（アセンブリ、リンカスクリプト、システム初期化、サンプルアプリ）についての詳細設計を示します。</p>
+  <h2>ファイル一覧</h2>
+  <ul>
+    <li><code>src/cstartup.asm</code> : スタートアップ（リセットベクタ、BSSクリア、データコピー、SystemInit 呼び出し）</li>
+    <li><code>linker_script.ld</code>  : メモリマップとセクション割当</li>
+    <li><code>src/system_rh850.c</code> : システム初期化（MainOSC/PLL/クロック分周、割り込み初期化）</li>
+    <li><code>inc/system_rh850.h</code> : システム初期化のヘッダ</li>
+    <li><code>inc/rh850_regs.h</code>   : レジスタ定義</li>
+    <li><code>src/main.c</code>        : サンプルアプリ（LED点滅）</li>
+  </ul>
+  <h2>メモリマップ</h2>
+  <table>
+    <thead>
+      <tr><th>領域</th><th>開始アドレス</th><th>サイズ</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Code Flash</td><td>0x00000000</td><td>2MB</td><td>プログラムコード</td></tr>
+      <tr><td>Data Flash</td><td>0x01000000</td><td>64KB</td><td>データ保存</td></tr>
+      <tr><td>RAM</td><td>0xFEDE8000</td><td>256KB</td><td>データ・スタック</td></tr>
+    </tbody>
+  </table>
+  <h2>起動シーケンス</h2>
+  <ol>
+    <li>リセットベクタへジャンプ（<code>_RESET</code>）</li>
+    <li><code>cstartup.asm::_start</code> 実行（割り込み無効化、SP 初期化、BSS クリア、データコピー、<code>SystemInit()</code> 呼び出し、割り込み有効化、<code>main()</code> へ移行）</li>
+  </ol>
+  <h2>フローチャート</h2>
+  <p>ブート・スタートアップのフロー図（下図参照）</p>
+  <img src="diagrams/startup_flowchart.svg" alt="Startup Flowchart" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;" />
+  <h2>BSS と Data 初期化</h2>
+  <p>BSS をワード単位で 0 埋め、データを ROM から RAM へワードコピーします。アライメントとセクションアドレスがリンカ設定と一致することを確認してください。</p>
+  <h2>SystemInit の詳細</h2>
+  <p>MainOSC の有効化、PLL の設定・待ち、クロック分周・切替、割り込みコントローラ初期化などを行います。`system_rh850.c` を参照してください。</p>
+  <h2>ビルド手順（参考）</h2>
+  <pre><code>rh850-elf-as -mcpu=g3m -o cstartup.o src/cstartup.asm
+rh850-elf-gcc -mcpu=g3m -O2 -I inc -c src/system_rh850.c -o system_rh850.o
+rh850-elf-gcc -mcpu=g3m -O2 -I inc -c src/main.c -o main.o
+rh850-elf-ld -T linker_script.ld cstartup.o system_rh850.o main.o -o firmware.elf
+rh850-elf-objcopy -O ihex firmware.elf firmware.hex</code></pre>
+  <h2>検証・注意点</h2>
+  <ul>
+    <li>ベクタテーブルと各ハンドラは実装状況に合わせて拡張すること</li>
+    <li>レジスタアドレスはサンプル値なので実機マニュアルと突合すること</li>
+    <li>保護レジスタやウォッチドッグに注意して初期化手順を行うこと</li>
+  </ul>
+  <h2>変更履歴</h2>
+  <ul>
+    <li>2025-11-16: 初版作成</li>
+  </ul>
+</body>
+</html>
