@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1400" viewBox="0 0 1000 1400">
   <style>
-    .box { fill:#fff; stroke:#0b3b75; stroke-width:2px; rx:8 }
+    .box { fill:#fff; stroke:#0b3b75; stroke-width:2px; rx:6 }
     .alt { fill:#f7fbff }
     .fail { fill:#fff5f5; stroke:#c92a2a; stroke-width:2px }
-    .text { font-family: Arial, Helvetica, sans-serif; font-size:13px; fill:#111 }
-    .title { font-size:18px; font-weight:700; fill:#0b3b75 }
+    .text { font-family: Arial, Helvetica, sans-serif; font-size:12px; fill:#111 }
+    .title { font-size:16px; font-weight:700; fill:#0b3b75 }
     .arrow { stroke:#333; stroke-width:2px; fill:none; marker-end:url(#arrow) }
   </style>
   <defs>
@@ -15,55 +15,55 @@
   </defs>
   <text x="500" y="30" text-anchor="middle" class="title">Startup Flow with Error Branches</text>
   <g transform="translate(40,60)">
-    <rect x="290" y="10" width="420" height="44" class="box"/>
+    <rect x="340" y="10" width="300" height="28" class="box"/>
     <text x="500" y="40" text-anchor="middle" class="text">Reset Vector (_RESET)</text>
     <path class="arrow" d="M500 60 L500 110" />
 
-    <rect x="290" y="110" width="420" height="44" class="alt"/>
+    <rect x="340" y="110" width="300" height="28" class="alt"/>
     <text x="500" y="142" text-anchor="middle" class="text">_start (cstartup.asm)</text>
     <path class="arrow" d="M500 170 L500 210" />
 
-    <rect x="290" y="210" width="420" height="44" class="box"/>
+    <rect x="340" y="210" width="300" height="28" class="box"/>
     <text x="500" y="242" text-anchor="middle" class="text">Disable interrupts; Init SP</text>
     <path class="arrow" d="M500 268 L500 310" />
 
-    <rect x="290" y="310" width="420" height="44" class="alt"/>
+    <rect x="340" y="310" width="300" height="28" class="alt"/>
     <text x="500" y="342" text-anchor="middle" class="text">BSS Clear; Data copy (ROM→RAM)</text>
     <path class="arrow" d="M500 378 L500 430" />
 
-    <rect x="290" y="430" width="420" height="44" class="box"/>
+    <rect x="340" y="430" width="300" height="28" class="box"/>
     <text x="500" y="462" text-anchor="middle" class="text">Optional: Verify data (CRC)</text>
     <path class="arrow" d="M500 498 L500 540" />
 
-    <rect x="290" y="540" width="420" height="44" class="alt"/>
+    <rect x="340" y="540" width="300" height="28" class="alt"/>
     <text x="500" y="572" text-anchor="middle" class="text">Verify OK</text>
-    <rect x="290" y="600" width="420" height="44" class="fail"/>
+    <rect x="340" y="600" width="300" height="28" class="fail"/>
     <text x="500" y="632" text-anchor="middle" class="text">Verify FAIL → bootloader / restore</text>
 
     <path class="arrow" d="M260 596 L500 630" />
     <path class="arrow" d="M740 596 L740 660" />
     <path class="arrow" d="M740 660 L500 700" />
 
-    <rect x="290" y="630" width="420" height="44" class="box"/>
+    <rect x="340" y="630" width="300" height="28" class="box"/>
     <text x="500" y="662" text-anchor="middle" class="text">Call SystemInit()</text>
     <path class="arrow" d="M500 696 L500 740" />
 
-    <rect x="290" y="740" width="420" height="44" class="box"/>
+    <rect x="340" y="740" width="300" height="28" class="box"/>
     <text x="500" y="772" text-anchor="middle" class="text">SystemInit OK</text>
-    <rect x="290" y="800" width="420" height="44" class="fail"/>
+    <rect x="340" y="800" width="300" height="28" class="fail"/>
     <text x="500" y="832" text-anchor="middle" class="text">SystemInit FAIL → Safe Mode / Halt</text>
 
     <path class="arrow" d="M300 796 L500 840" />
     <path class="arrow" d="M700 796 L700 840" />
 
-    <rect x="290" y="840" width="420" height="44" class="alt"/>
+    <rect x="340" y="840" width="300" height="28" class="alt"/>
     <text x="500" y="872" text-anchor="middle" class="text">Enable interrupts; Jump to main()</text>
     <path class="arrow" d="M500 896 L500 940" />
 
-    <rect x="290" y="940" width="420" height="44" class="box"/>
+    <rect x="340" y="940" width="300" height="28" class="box"/>
     <text x="500" y="972" text-anchor="middle" class="text">main() — Application (正常動作)</text>
 
-    <rect x="290" y="1040" width="420" height="44" class="fail"/>
+    <rect x="340" y="1040" width="300" height="28" class="fail"/>
     <text x="500" y="1072" text-anchor="middle" class="text">Safe Mode / Error LED / Wait for host update</text>
   </g>
 

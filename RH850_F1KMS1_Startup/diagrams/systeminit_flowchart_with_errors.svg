@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
   <style>
-    .box { fill: #fff; stroke: #0b3b75; stroke-width:2px; rx:8; }
+    .box { fill: #fff; stroke: #0b3b75; stroke-width:2px; rx:6; }
     .alt { fill:#f7fbff; }
     .fail { fill:#fff5f5; stroke:#c92a2a; stroke-width:2px; }
-    .text { font-family: Arial, Helvetica, sans-serif; font-size:13px; fill:#111; }
-    .title { font-size:18px; font-weight:700; fill:#0b3b75; }
+    .text { font-family: Arial, Helvetica, sans-serif; font-size:12px; fill:#111; }
+    .title { font-size:16px; font-weight:700; fill:#0b3b75; }
     .arrow { stroke:#333; stroke-width:2px; fill:none; marker-end: url(#arrowhead); }
   </style>
   <defs>
@@ -17,69 +17,69 @@
   <text x="600" y="36" text-anchor="middle" class="title">SystemInit Flow with Error Handling</text>
 
   <g transform="translate(40,70)">
-    <rect x="390" y="10" width="420" height="44" class="box"/>
+    <rect x="450" y="10" width="300" height="28" class="box"/>
     <text x="600" y="40" text-anchor="middle" class="text">SystemInit()</text>
     <path class="arrow" d="M600 58 L600 110" />
 
     <!-- MainOSC -->
-    <rect x="390" y="110" width="420" height="44" class="alt"/>
+    <rect x="450" y="110" width="300" height="28" class="alt"/>
     <text x="600" y="142" text-anchor="middle" class="text">Enable MainOSC (MOSCE=0x01)</text>
     <path class="arrow" d="M600 168 L600 220" />
 
     <!-- MOSC check -->
-    <rect x="390" y="220" width="420" height="44" class="box"/>
+    <rect x="450" y="220" width="300" height="28" class="box"/>
     <text x="370" y="252" text-anchor="middle" class="text">Wait MOSC stable (MOSCS.ACT)</text>
     <path class="arrow" d="M370 276 L370 320" />
 
-    <rect x="390" y="320" width="420" height="44" class="alt"/>
+    <rect x="450" y="320" width="300" height="28" class="alt"/>
     <text x="370" y="352" text-anchor="middle" class="text">MOSC OK → continue</text>
     <path class="arrow" d="M370 376 L600 376" />
 
     <!-- MOSC fail branch -->
-    <rect x="390" y="320" width="420" height="44" class="fail"/>
+    <rect x="450" y="320" width="300" height="28" class="fail"/>
     <text x="830" y="352" text-anchor="middle" class="text">MOSC FAIL → retry / fallback</text>
     <text x="830" y="370" text-anchor="middle" class="text" style="font-size:12px;">Try internal RC or retry N times</text>
 
     <path class="arrow" d="M830 384 L830 430" />
-    <rect x="390" y="430" width="420" height="44" class="fail"/>
+    <rect x="450" y="430" width="300" height="28" class="fail"/>
     <text x="830" y="462" text-anchor="middle" class="text">Fallback failed → enter Safe Mode / LED error</text>
     <path class="arrow" d="M830 498 L600 498" />
 
     <!-- Continue to PLL -->
-    <rect x="390" y="376" width="420" height="44" class="box alt"/>
+    <rect x="450" y="376" width="300" height="28" class="box alt"/>
     <text x="600" y="408" text-anchor="middle" class="text">Configure PLL (PLLC0) and enable</text>
     <path class="arrow" d="M600 440 L600 500" />
 
-    <rect x="390" y="500" width="420" height="44" class="box"/>
+    <rect x="450" y="500" width="300" height="28" class="box"/>
     <text x="600" y="532" text-anchor="middle" class="text">Wait PLL stable (PLLS.ACT)</text>
     <path class="arrow" d="M600 556 L600 620" />
 
     <!-- PLL fail branch -->
-    <rect x="390" y="556" width="420" height="44" class="fail"/>
+    <rect x="450" y="556" width="300" height="28" class="fail"/>
     <text x="290" y="588" text-anchor="middle" class="text">PLL FAIL → retry / reduce frequency</text>
     <text x="290" y="606" text-anchor="middle" class="text" style="font-size:12px;">If persistent, fallback to safe clock or halt</text>
     <path class="arrow" d="M290 620 L600 620" />
 
     <!-- Configure dividers -->
-    <rect x="390" y="620" width="420" height="44" class="alt"/>
+    <rect x="450" y="620" width="300" height="28" class="alt"/>
     <text x="600" y="652" text-anchor="middle" class="text">Configure clock dividers & selectors (CKSC registers)</text>
     <text x="600" y="672" text-anchor="middle" class="text" style="font-size:12px;">Set CPU / peripheral sources and wait for ACT</text>
     <path class="arrow" d="M600 696 L600 760" />
 
     <!-- Protect / watchdog handling -->
-    <rect x="390" y="760" width="420" height="44" class="box"/>
+    <rect x="450" y="760" width="300" height="28" class="box"/>
     <text x="600" y="792" text-anchor="middle" class="text">Unlock protected regs / refresh WDOG if needed</text>
     <path class="arrow" d="M600 812 L600 860" />
 
     <!-- Data verify branch (optional) -->
-    <rect x="390" y="860" width="420" height="44" class="alt"/>
+    <rect x="450" y="860" width="300" height="28" class="alt"/>
     <text x="600" y="892" text-anchor="middle" class="text">Optional: Verify data copy / CRC check</text>
     <path class="arrow" d="M600 916 L600 960" />
 
-    <rect x="390" y="960" width="420" height="44" class="box"/>
+    <rect x="450" y="960" width="300" height="28" class="box"/>
     <text x="450" y="992" text-anchor="middle" class="text">Verify OK → continue</text>
 
-    <rect x="390" y="960" width="420" height="44" class="fail"/>
+    <rect x="450" y="960" width="300" height="28" class="fail"/>
     <text x="600" y="992" text-anchor="middle" class="text">Verify FAIL → attempt restore / bootloader</text>
     <text x="600" y="1010" text-anchor="middle" class="text" style="font-size:12px;">Trigger bootloader update or fallback image</text>
 
@@ -87,15 +87,15 @@
     <path class="arrow" d="M830 1036 L600 1060" />
 
     <!-- Interrupt init -->
-    <rect x="390" y="1060" width="420" height="44" class="box alt"/>
+    <rect x="450" y="1060" width="300" height="28" class="box alt"/>
     <text x="600" y="1092" text-anchor="middle" class="text">Initialize Interrupt controller (mask, set low priority)</text>
     <path class="arrow" d="M600 1116 L600 1180" />
 
-    <rect x="390" y="1180" width="420" height="44" class="box"/>
+    <rect x="450" y="1180" width="300" height="28" class="box"/>
     <text x="600" y="1212" text-anchor="middle" class="text">Update g_system_clock / g_peripheral_clock</text>
     <path class="arrow" d="M600 1236 L600 1280" />
 
-    <rect x="390" y="1280" width="420" height="44" class="alt"/>
+    <rect x="450" y="1280" width="300" height="28" class="alt"/>
     <text x="600" y="1312" text-anchor="middle" class="text">Return to caller (cstartup)</text>
   </g>
 
