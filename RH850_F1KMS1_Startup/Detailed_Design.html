@@ -70,6 +70,125 @@
     <li><code>main()</code> へジャンプしてアプリケーション実行開始</li>
   </ol>
   <p><strong>注記:</strong> 例外ベクタテーブル（<code>__exception_table</code>）は 512 バイトアライメントで配置され、基本的な例外ハンドラ（RESET, SYSERR, TRAP 等）のエントリを含みます。実運用では各ハンドラを実装してください。</p>
+  <h2>関数構成図（コールグラフ）</h2>
+  <p>スタートアップからアプリケーション実行までの関数呼び出し関係を示します。</p>
+  <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;margin:16px 0">
+    <style>
+      .fn-box { fill:#fff; stroke:#10b981; stroke-width:2px; rx:8; }
+      .fn-entry { fill:#dbeafe; stroke:#2563eb; stroke-width:2.5px; }
+      .fn-system { fill:#fef3c7; stroke:#f59e0b; stroke-width:2px; }
+      .fn-app { fill:#fce7f3; stroke:#ec4899; stroke-width:2px; }
+      .fn-text { font-family: 'Courier New', monospace; font-size:13px; fill:#0a2a42; font-weight:600; }
+      .fn-desc { font-family: Arial, sans-serif; font-size:11px; fill:#475569; }
+      .fn-title { font-size:18px; font-weight:700; fill:#0b3b75; }
+      .fn-call { stroke:#10b981; stroke-width:2px; fill:none; marker-end:url(#fn-arrow); stroke-dasharray:none; }
+      .fn-call-sub { stroke:#64748b; stroke-width:1.5px; stroke-dasharray:4,3; fill:none; marker-end:url(#fn-arrow-sub); }
+    </style>
+    <defs>
+      <marker id="fn-arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
+        <polygon points="0 0, 10 4, 0 8" fill="#10b981" />
+      </marker>
+      <marker id="fn-arrow-sub" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#64748b" />
+      </marker>
+    </defs>
+    <text x="500" y="30" text-anchor="middle" class="fn-title">関数構成図 (Function Call Graph)</text>
+
+    <!-- Entry Point -->
+    <rect x="400" y="60" width="200" height="50" class="fn-box fn-entry"/>
+    <text x="500" y="80" text-anchor="middle" class="fn-text">_RESET / _start</text>
+    <text x="500" y="96" text-anchor="middle" class="fn-desc">(cstartup.asm)</text>
+    <path class="fn-call" d="M500 110 L500 160"/>
+
+    <!-- SystemInit -->
+    <rect x="400" y="160" width="200" height="50" class="fn-box fn-system"/>
+    <text x="500" y="180" text-anchor="middle" class="fn-text">SystemInit()</text>
+    <text x="500" y="196" text-anchor="middle" class="fn-desc">(system_rh850.c)</text>
+    
+    <!-- SystemInit branches -->
+    <path class="fn-call" d="M400 185 L250 240"/>
+    <path class="fn-call" d="M600 185 L750 240"/>
+
+    <!-- SystemClockInit -->
+    <rect x="150" y="240" width="200" height="50" class="fn-box fn-system"/>
+    <text x="250" y="260" text-anchor="middle" class="fn-text">SystemClockInit()</text>
+    <text x="250" y="276" text-anchor="middle" class="fn-desc">クロック設定</text>
+
+    <!-- InterruptInit -->
+    <rect x="650" y="240" width="200" height="50" class="fn-box fn-system"/>
+    <text x="750" y="260" text-anchor="middle" class="fn-text">InterruptInit()</text>
+    <text x="750" y="276" text-anchor="middle" class="fn-desc">割り込み初期化</text>
+
+    <!-- SystemClockInit details -->
+    <path class="fn-call-sub" d="M250 290 L180 340"/>
+    <path class="fn-call-sub" d="M250 290 L250 340"/>
+    <path class="fn-call-sub" d="M250 290 L320 340"/>
+
+    <rect x="80" y="340" width="120" height="38" class="fn-box" style="fill:#f0fdf4"/>
+    <text x="140" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">MainOSC 有効化</text>
+    <text x="140" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">MOSCE=0x01</text>
+
+    <rect x="190" y="340" width="120" height="38" class="fn-box" style="fill:#f0fdf4"/>
+    <text x="250" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">PLL 設定</text>
+    <text x="250" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">PLLC0 設定</text>
+
+    <rect x="300" y="340" width="120" height="38" class="fn-box" style="fill:#f0fdf4"/>
+    <text x="360" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">分周器設定</text>
+    <text x="360" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">CKSC 設定</text>
+
+    <!-- InterruptInit details -->
+    <path class="fn-call-sub" d="M750 290 L750 340"/>
+    <rect x="690" y="340" width="120" height="38" class="fn-box" style="fill:#fef9f0"/>
+    <text x="750" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">EIC 初期化</text>
+    <text x="750" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">512ch マスク設定</text>
+
+    <!-- Return to startup -->
+    <path class="fn-call" d="M500 210 L500 440"/>
+    <text x="520" y="330" class="fn-desc" style="font-size:11px">復帰</text>
+
+    <!-- main() -->
+    <rect x="400" y="440" width="200" height="50" class="fn-box fn-app"/>
+    <text x="500" y="460" text-anchor="middle" class="fn-text">main()</text>
+    <text x="500" y="476" text-anchor="middle" class="fn-desc">(main.c)</text>
+
+    <!-- main() branches (example) -->
+    <path class="fn-call-sub" d="M500 490 L420 540"/>
+    <path class="fn-call-sub" d="M500 490 L580 540"/>
+
+    <rect x="340" y="540" width="160" height="38" class="fn-box" style="fill:#fff1f2"/>
+    <text x="420" y="556" text-anchor="middle" class="fn-desc" style="font-size:11px">GPIO 初期化</text>
+    <text x="420" y="570" text-anchor="middle" class="fn-desc" style="font-size:10px">ポート設定</text>
+
+    <rect x="500" y="540" width="160" height="38" class="fn-box" style="fill:#fff1f2"/>
+    <text x="580" y="556" text-anchor="middle" class="fn-desc" style="font-size:11px">メインループ</text>
+    <text x="580" y="570" text-anchor="middle" class="fn-desc" style="font-size:10px">LED 制御等</text>
+
+    <!-- Utility functions (optional) -->
+    <rect x="50" y="540" width="160" height="38" class="fn-box" style="fill:#fefce8"/>
+    <text x="130" y="556" text-anchor="middle" class="fn-text" style="font-size:11px">SystemDelay()</text>
+    <text x="130" y="570" text-anchor="middle" class="fn-desc" style="font-size:10px">ユーティリティ</text>
+
+    <rect x="50" y="590" width="160" height="38" class="fn-box" style="fill:#fefce8"/>
+    <text x="130" y="606" text-anchor="middle" class="fn-text" style="font-size:11px">SystemGetCpuClock()</text>
+    <text x="130" y="620" text-anchor="middle" class="fn-desc" style="font-size:10px">クロック取得</text>
+
+    <path class="fn-call-sub" d="M340 559 L210 559"/>
+    <path class="fn-call-sub" d="M500 559 L210 609"/>
+
+    <!-- Legend -->
+    <g transform="translate(50,650)">
+      <rect x="0" y="0" width="50" height="20" class="fn-entry" rx="4"/>
+      <text x="58" y="14" class="fn-desc" style="font-size:11px">エントリポイント</text>
+      <rect x="180" y="0" width="50" height="20" class="fn-system" rx="4"/>
+      <text x="238" y="14" class="fn-desc" style="font-size:11px">システム初期化</text>
+      <rect x="360" y="0" width="50" height="20" class="fn-app" rx="4"/>
+      <text x="418" y="14" class="fn-desc" style="font-size:11px">アプリケーション</text>
+      <path d="M550 10 L600 10" class="fn-call"/>
+      <text x="608" y="14" class="fn-desc" style="font-size:11px">主要呼び出し</text>
+      <path d="M700 10 L750 10" class="fn-call-sub"/>
+      <text x="758" y="14" class="fn-desc" style="font-size:11px">補助/内部呼び出し</text>
+    </g>
+  </svg>
   <h2>フローチャート</h2>
   <p>ブート・スタートアップのフロー図（下図参照）</p>
   <div class="legend" aria-hidden="true">
