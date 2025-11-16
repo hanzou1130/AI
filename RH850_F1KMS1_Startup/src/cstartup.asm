@@ -90,11 +90,12 @@ _start:
 
         ; Clear BSS section (RAM の未初期化領域を 0 で埋める)
         ; - 目的: グローバル/静的変数の既知の初期値(0)を保証するため
-        ; - 実装: ワード単位でクリアする (st.w を使用)
+        ; - 実装: 32ビット (ワード = 32bit) 単位でクリアする (st.w を使用)
         ; - レジスタ: r6 = 現在の書き込み先アドレス(__sbss)
         ;           r7 = BSS 終端アドレス(__ebss)
         ;           r0 = 0 (クリア値)
-        ; - 注意: __sbss / __ebss はリンカスクリプトで定義されるため
+        ; - 注意: アドレスは 32bit 境界に揃っていることを前提とする
+        ;         __sbss / __ebss はリンカスクリプトで定義されるため
         ;         範囲外アクセスが発生しないことを確認すること
         movhi   hi(__sbss), r0, r6        ; r6 = start of BSS
         movea   lo(__sbss), r6, r6
@@ -109,6 +110,8 @@ _bss_check:
         bl      _bss_loop                 ; Loop if r6 < r7
 
         ; Copy initialized data from ROM to RAM
+        ; - 実装: 32ビット (ワード = 32bit) 単位でコピー (ld.w / st.w を使用)
+        ; - レジスタ: r6 = source (ROM), r7 = destination (RAM), r8 = end (address)
         movhi   hi(__sdata_rom), r0, r6   ; r6 = source (ROM)
         movea   lo(__sdata_rom), r6, r6
         movhi   hi(__sdata), r0, r7       ; r7 = destination (RAM)
