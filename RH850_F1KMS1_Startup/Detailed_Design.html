@@ -5,15 +5,37 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>RH850/F1KM-S1　詳細設計書</title>
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; line-height: 1.6; margin: 24px; color: #111; }
-    h1,h2,h3 { color: #1a4d8f; }
-    pre { background: #f4f4f4; padding: 12px; overflow: auto; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 6px; }
+    :root {
+      --bg: #fbfdff;
+      --surface: #ffffff;
+      --primary: #2563eb; /* blue */
+      --accent: #06b6d4;  /* teal */
+      --success: #10b981; /* green */
+      --danger: #ef4444;  /* red */
+      --muted: #eef9fb;
+      --text: #0b2b3a;
+    }
+    body { font-family: Arial, Helvetica, sans-serif; line-height: 1.6; margin: 20px; color: var(--text); background: linear-gradient(180deg,#f8fbff 0%,var(--bg) 100%); }
+    h1 { color: #fff; margin:0; padding:18px; font-size:22px; }
+    h2,h3 { color: var(--primary); }
+    .doc-banner { background: linear-gradient(90deg,var(--primary),var(--accent)); border-radius:8px; padding:6px 12px; margin-bottom:18px; display:inline-block }
+    .doc-sub { color: #e6f2ff; font-size:13px; margin-top:6px }
+    pre { background: #001422; color: #e6f7ff; padding: 12px; overflow: auto; border-radius:6px }
+    table { border-collapse: collapse; width: 100%; background: var(--surface); border-radius:6px; overflow:hidden }
+    th { background: linear-gradient(90deg,#e6f3ff,#eef9ff); color: var(--primary); padding:8px; text-align:left }
+    td { border-top: 1px solid #eef3f8; padding:8px }
+    tbody tr:nth-child(odd) td { background: #fbfeff }
+    .legend { display:flex; gap:12px; align-items:center; margin:12px 0 }
+    .legend .item { display:flex; gap:8px; align-items:center }
+    .sw { width:18px; height:14px; border-radius:4px; display:inline-block }
+    a.repo { color:var(--accent) }
   </style>
 </head>
 <body>
-  <h1>RH850/F1KM-S1　詳細設計書</h1>
+  <div class="doc-banner">
+    <h1>RH850/F1KM-S1　詳細設計書</h1>
+    <div class="doc-sub">Startup, SystemInit, フロー図 と リファレンス</div>
+  </div>
   <h2>概要</h2>
   <p>この文書は RH850/F1KM-S1 向けに作成したスタートアップ一式（アセンブリ、リンカスクリプト、システム初期化、サンプルアプリ）についての詳細設計を示します。</p>
   <h2>ファイル一覧</h2>
@@ -43,14 +65,20 @@
   </ol>
   <h2>フローチャート</h2>
   <p>ブート・スタートアップのフロー図（下図参照）</p>
+  <div class="legend" aria-hidden="true">
+    <div class="item"><span class="sw" style="background:#ffffff; border:2px solid #0b84ff"></span><span>標準ステップ</span></div>
+    <div class="item"><span class="sw" style="background:#e6fbf8; border:2px solid #06b6d4"></span><span>補助/代替ステップ</span></div>
+    <div class="item"><span class="sw" style="background:#fff0f0; border:2px solid #ff6b6b"></span><span>失敗 / フェイルパス</span></div>
+    <div class="item"><span class="sw" style="background:#f4f8ff; border:2px solid #2563eb"></span><span>情報 / 注記</span></div>
+  </div>
   <svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
     <!-- inlined from diagrams/startup_flowchart.svg (compact boxes) -->
     <style>
-      .box { fill: #ffffff; stroke: #1a4d8f; stroke-width:1.8px; rx:6; }
-      .box.alt { fill:#f8fafc; }
-      .text { font-family: Helvetica, Arial, sans-serif; font-size:11px; fill:#111; }
-      .title { font-size:16px; font-weight:700; fill:#0b3b75; }
-      .arrow { stroke:#2b2b2b; stroke-width:1.8px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead); }
+      .box { fill: #ffffff; stroke:#0b84ff; stroke-width:1.6px; rx:6; }
+      .box.alt { fill:#e6fbf8; stroke:#06b6d4 }
+      .text { font-family: Helvetica, Arial, sans-serif; font-size:11px; fill:#07263c; }
+      .title { font-size:16px; font-weight:700; fill:#074b9c; }
+      .arrow { stroke:#0b84ff; stroke-width:1.6px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead); }
     </style>
     <defs>
       <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
@@ -169,11 +197,11 @@
   <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1600" viewBox="0 0 1000 1600" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
     <!-- inlined from diagrams/startup_flowchart_detailed.svg (compact boxes) -->
     <style>
-      .box { fill: #fff; stroke: #0b3b75; stroke-width:1.8px; rx:6; }
-      .alt { fill:#f7fbff; }
-      .text { font-family: Arial, Helvetica, sans-serif; font-size:11px; fill:#111; }
-      .title { font-size:16px; font-weight:700; fill:#0b3b75; }
-      .arrow { stroke:#2b2b2b; stroke-width:1.8px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead); }
+      .box { fill: #ffffff; stroke:#7c3aed; stroke-width:1.6px; rx:6; }
+      .alt { fill:#f3efff; }
+      .text { font-family: Arial, Helvetica, sans-serif; font-size:11px; fill:#07263c; }
+      .title { font-size:16px; font-weight:700; fill:#6d28d9; }
+      .arrow { stroke:#7c3aed; stroke-width:1.6px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead); }
     </style>
     <defs>
       <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
@@ -226,11 +254,11 @@
   <svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
     <!-- inlined from diagrams/systeminit_flowchart.svg (compact boxes) -->
     <style>
-      .box { fill: #fff; stroke: #2563eb; stroke-width:1.8px; rx:6; }
-      .alt { fill:#f0f7ff; }
-      .text { font-family: Arial, sans-serif; font-size:11px; fill:#111; }
-      .title { font-size:15px; font-weight:700; fill:#0b3b75; }
-      .arrow { stroke:#2b2b2b; stroke-width:1.8px; stroke-linecap:round; fill:none; marker-end: url(#arrow); }
+      .box { fill: #fff; stroke:#ff7a59; stroke-width:1.6px; rx:6; }
+      .alt { fill:#fff6f2; stroke:#ffae9a }
+      .text { font-family: Arial, sans-serif; font-size:11px; fill:#07263c; }
+      .title { font-size:15px; font-weight:700; fill:#c2410c; }
+      .arrow { stroke:#ff7a59; stroke-width:1.6px; stroke-linecap:round; fill:none; marker-end: url(#arrow); }
     </style>
     <defs>
       <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
