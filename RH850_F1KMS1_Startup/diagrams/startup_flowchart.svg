@@ -17,42 +17,42 @@
 
   <!-- Nodes -->
   <g transform="translate(150,70)">
-    <rect x="200" y="30" width="300" height="48" class="box"/>
+    <rect x="140" y="30" width="420" height="44" class="box"/>
     <text x="350" y="60" text-anchor="middle" class="text">Reset Vector (_RESET)</text>
 
     <path class="arrow" d="M350 78 L350 120" />
 
-    <rect x="200" y="120" width="300" height="48" class="box alt"/>
+    <rect x="140" y="120" width="420" height="44" class="box alt"/>
     <text x="350" y="150" text-anchor="middle" class="text">_start (cstartup.asm)</text>
 
     <path class="arrow" d="M350 168 L350 210" />
 
-    <rect x="140" y="210" width="420" height="48" class="box"/>
+    <rect x="140" y="210" width="420" height="44" class="box"/>
     <text x="350" y="240" text-anchor="middle" class="text">Disable interrupts (di)</text>
 
     <path class="arrow" d="M350 258 L350 300" />
 
-    <rect x="140" y="300" width="420" height="48" class="box alt"/>
+    <rect x="140" y="300" width="420" height="44" class="box alt"/>
     <text x="350" y="330" text-anchor="middle" class="text">Initialize SP (SP_INIT)</text>
 
     <path class="arrow" d="M350 348 L350 390" />
 
-    <rect x="140" y="390" width="420" height="48" class="box"/>
+    <rect x="140" y="390" width="420" height="44" class="box"/>
     <text x="350" y="420" text-anchor="middle" class="text">Clear BSS (__sbss → __ebss)</text>
 
     <path class="arrow" d="M350 438 L350 480" />
 
-    <rect x="140" y="480" width="420" height="48" class="box alt"/>
+    <rect x="140" y="480" width="420" height="44" class="box alt"/>
     <text x="350" y="510" text-anchor="middle" class="text">Copy initialized data (ROM → RAM)</text>
 
     <path class="arrow" d="M350 528 L350 570" />
 
-    <rect x="140" y="570" width="420" height="48" class="box"/>
+    <rect x="140" y="570" width="420" height="44" class="box"/>
     <text x="350" y="600" text-anchor="middle" class="text">Call SystemInit()</text>
 
     <path class="arrow" d="M350 618 L350 660" />
 
-    <rect x="140" y="660" width="420" height="48" class="box alt"/>
+    <rect x="140" y="660" width="420" height="44" class="box alt"/>
     <text x="350" y="690" text-anchor="middle" class="text">Enable interrupts (ei)</text>
 
     <path class="arrow" d="M350 708 L350 750" />

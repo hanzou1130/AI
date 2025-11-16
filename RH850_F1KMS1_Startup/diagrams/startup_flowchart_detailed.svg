@@ -16,60 +16,60 @@
 
   <g transform="translate(40,60)">
     <!-- Reset -->
-    <rect x="300" y="10" width="400" height="44" class="box"/>
+    <rect x="290" y="10" width="420" height="44" class="box"/>
     <text x="500" y="40" text-anchor="middle" class="text">Reset Vector (_RESET)</text>
     <path class="arrow" d="M500 54 L500 100" />
 
     <!-- start -->
-    <rect x="200" y="100" width="600" height="56" class="box alt"/>
+    <rect x="290" y="100" width="420" height="44" class="box alt"/>
     <text x="500" y="135" text-anchor="middle" class="text">_start (cstartup.asm) — 初期化エントリ</text>
     <path class="arrow" d="M500 156 L500 200" />
 
     <!-- Disable interrupts -->
-    <rect x="160" y="200" width="680" height="48" class="box"/>
+    <rect x="290" y="200" width="420" height="44" class="box"/>
     <text x="500" y="230" text-anchor="middle" class="text">Disable interrupts (di)</text>
     <path class="arrow" d="M500 248 L500 290" />
 
     <!-- SP Init -->
-    <rect x="160" y="290" width="680" height="64" class="box alt"/>
+    <rect x="290" y="290" width="420" height="44" class="box alt"/>
     <text x="500" y="320" text-anchor="middle" class="text">Initialize SP = SP_INIT (0xFEE28000)</text>
     <text x="500" y="342" text-anchor="middle" class="text" style="font-size:12px;">(hi/lo movea を使用)</text>
     <path class="arrow" d="M500 354 L500 400" />
 
     <!-- BSS clear -->
-    <rect x="100" y="400" width="800" height="72" class="box"/>
+    <rect x="290" y="400" width="420" height="44" class="box"/>
     <text x="500" y="430" text-anchor="middle" class="text">Clear BSS: for (p=__sbss; p<__ebss; p+=4) *p = 0</text>
     <text x="500" y="452" text-anchor="middle" class="text" style="font-size:12px;">r6=__sbss, r7=__ebss, r0=0, st.w r0,0[r6]; add 4,r6</text>
     <path class="arrow" d="M500 472 L500 520" />
 
     <!-- Data copy -->
-    <rect x="100" y="520" width="800" height="88" class="box alt"/>
+    <rect x="290" y="520" width="420" height="44" class="box alt"/>
     <text x="500" y="548" text-anchor="middle" class="text">Copy .data: for (dst=__sdata; dst<__edata; dst+=4) *dst = *src++</text>
     <text x="500" y="570" text-anchor="middle" class="text" style="font-size:12px;">r6=__sdata_rom(src), r7=__sdata(dst), r8=__edata, ld.w 0[r6],r9; st.w r9,0[r7]</text>
     <path class="arrow" d="M500 608 L500 660" />
 
     <!-- Optional: data checksum/verify (annotated) -->
-    <rect x="120" y="660" width="760" height="64" class="box"/>
+    <rect x="290" y="660" width="420" height="44" class="box"/>
     <text x="500" y="690" text-anchor="middle" class="text">(Optional) Verify data copy / checksum / protect registers</text>
     <path class="arrow" d="M500 724 L500 780" />
 
     <!-- SystemInit call -->
-    <rect x="220" y="780" width="560" height="56" class="box alt"/>
+    <rect x="290" y="780" width="420" height="44" class="box alt"/>
     <text x="500" y="813" text-anchor="middle" class="text">Call SystemInit()</text>
     <path class="arrow" d="M500 834 L500 880" />
 
     <!-- Enable interrupts -->
-    <rect x="200" y="880" width="600" height="48" class="box"/>
+    <rect x="290" y="880" width="420" height="44" class="box"/>
     <text x="500" y="910" text-anchor="middle" class="text">Enable interrupts (ei)</text>
     <path class="arrow" d="M500 934 L500 980" />
 
     <!-- Jump to main -->
-    <rect x="220" y="980" width="560" height="56" class="box alt"/>
+    <rect x="290" y="980" width="420" height="44" class="box alt"/>
     <text x="500" y="1013" text-anchor="middle" class="text">Jump to main() (jmp [addr])</text>
     <path class="arrow" d="M500 1034 L500 1080" />
 
     <!-- main -->
-    <rect x="240" y="1080" width="520" height="64" class="box"/>
+    <rect x="290" y="1080" width="420" height="44" class="box"/>
     <text x="500" y="1113" text-anchor="middle" class="text">main() — アプリケーション開始</text>
     <text x="500" y="1136" text-anchor="middle" class="text" style="font-size:12px;">(GPIO 初期化 → ループ → LED toggle 等)</text>
   </g>
