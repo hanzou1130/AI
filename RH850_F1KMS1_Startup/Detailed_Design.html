@@ -46,11 +46,11 @@
   <svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
     <!-- inlined from diagrams/startup_flowchart.svg (compact boxes) -->
     <style>
-      .box { fill: #ffffff; stroke: #1a4d8f; stroke-width:2px; rx:6; }
+      .box { fill: #ffffff; stroke: #1a4d8f; stroke-width:1.8px; rx:6; }
       .box.alt { fill:#f8fafc; }
-      .text { font-family: Helvetica, Arial, sans-serif; font-size:12px; fill:#111; }
-      .title { font-size:16px; font-weight:600; fill:#0b3b75; }
-      .arrow { stroke:#333; stroke-width:2px; fill:none; marker-end: url(#arrowhead); }
+      .text { font-family: Helvetica, Arial, sans-serif; font-size:11px; fill:#111; }
+      .title { font-size:16px; font-weight:700; fill:#0b3b75; }
+      .arrow { stroke:#2b2b2b; stroke-width:1.8px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead); }
     </style>
     <defs>
       <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
@@ -60,34 +60,34 @@
     <text x="450" y="36" text-anchor="middle" class="title">RH850/F1KM-S1 Startup Flowchart</text>
     <g transform="translate(150,70)">
       <rect x="200" y="30" width="300" height="28" class="box"/>
-      <text x="350" y="60" text-anchor="middle" class="text">Reset Vector (_RESET)</text>
-      <path class="arrow" d="M350 78 L350 120" />
+      <text x="350" y="44" text-anchor="middle" dominant-baseline="middle" class="text">Reset Vector (_RESET)</text>
+      <path class="arrow" d="M350 66 L350 112" />
       <rect x="200" y="120" width="300" height="28" class="box alt"/>
-      <text x="350" y="150" text-anchor="middle" class="text">_start (cstartup.asm)</text>
-      <path class="arrow" d="M350 168 L350 210" />
+      <text x="350" y="134" text-anchor="middle" dominant-baseline="middle" class="text">_start (cstartup.asm)</text>
+      <path class="arrow" d="M350 156 L350 202" />
       <rect x="200" y="210" width="300" height="28" class="box"/>
-      <text x="350" y="240" text-anchor="middle" class="text">Disable interrupts (di)</text>
-      <path class="arrow" d="M350 258 L350 300" />
+      <text x="350" y="224" text-anchor="middle" dominant-baseline="middle" class="text">Disable interrupts (di)</text>
+      <path class="arrow" d="M350 246 L350 292" />
       <rect x="200" y="300" width="300" height="28" class="box alt"/>
-      <text x="350" y="330" text-anchor="middle" class="text">Initialize SP (SP_INIT)</text>
-      <path class="arrow" d="M350 348 L350 390" />
+      <text x="350" y="314" text-anchor="middle" dominant-baseline="middle" class="text">Initialize SP (SP_INIT)</text>
+      <path class="arrow" d="M350 336 L350 382" />
       <rect x="200" y="390" width="300" height="28" class="box"/>
-      <text x="350" y="420" text-anchor="middle" class="text">Clear BSS (__sbss → __ebss)</text>
-      <path class="arrow" d="M350 438 L350 480" />
+      <text x="350" y="404" text-anchor="middle" dominant-baseline="middle" class="text">Clear BSS (__sbss → __ebss)</text>
+      <path class="arrow" d="M350 426 L350 472" />
       <rect x="200" y="480" width="300" height="28" class="box alt"/>
-      <text x="350" y="510" text-anchor="middle" class="text">Copy initialized data (ROM → RAM)</text>
-      <path class="arrow" d="M350 528 L350 570" />
+      <text x="350" y="494" text-anchor="middle" dominant-baseline="middle" class="text">Copy initialized data (ROM → RAM)</text>
+      <path class="arrow" d="M350 516 L350 562" />
       <rect x="200" y="570" width="300" height="28" class="box"/>
-      <text x="350" y="600" text-anchor="middle" class="text">Call SystemInit()</text>
-      <path class="arrow" d="M350 618 L350 660" />
+      <text x="350" y="584" text-anchor="middle" dominant-baseline="middle" class="text">Call SystemInit()</text>
+      <path class="arrow" d="M350 606 L350 652" />
       <rect x="200" y="660" width="300" height="28" class="box alt"/>
-      <text x="350" y="690" text-anchor="middle" class="text">Enable interrupts (ei)</text>
-      <path class="arrow" d="M350 708 L350 750" />
+      <text x="350" y="674" text-anchor="middle" dominant-baseline="middle" class="text">Enable interrupts (ei)</text>
+      <path class="arrow" d="M350 696 L350 742" />
       <rect x="200" y="750" width="300" height="28" class="box"/>
-      <text x="350" y="780" text-anchor="middle" class="text">Jump to main()</text>
-      <path class="arrow" d="M350 798 L350 840" />
+      <text x="350" y="764" text-anchor="middle" dominant-baseline="middle" class="text">Jump to main()</text>
+      <path class="arrow" d="M350 786 L350 832" />
       <rect x="200" y="840" width="300" height="28" class="box alt"/>
-      <text x="350" y="870" text-anchor="middle" class="text">main() - Application</text>
+      <text x="350" y="854" text-anchor="middle" dominant-baseline="middle" class="text">main() - Application</text>
     </g>
     <text x="450" y="1160" text-anchor="middle" class="text">図: ブートからアプリケーション開始までの主要ステップ</text>
   </svg>
