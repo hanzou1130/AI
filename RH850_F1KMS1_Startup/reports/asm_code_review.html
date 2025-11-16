@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ASM Code Review — cstartup.asm</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#111; padding:24px; max-width:960px; margin:auto; }
+    h1,h2,h3 { color:#0b3b75 }
+    pre { background:#f6f8fb; padding:12px; border-radius:6px; overflow:auto }
+    .important { background:#fff6f2; border-left:4px solid #ff7a59; padding:8px 12px; }
+    .ok { background:#eefdf5; border-left:4px solid #10b981; padding:8px 12px; }
+    table { border-collapse:collapse; width:100%; margin:12px 0 }
+    th,td { border:1px solid #ddd; padding:8px; text-align:left }
+    code { background:#f3f4f6; padding:2px 6px; border-radius:4px }
+  </style>
+</head>
+<body>
+  <h1>ASM コードレビュー: <code>src/cstartup.asm</code></h1>
+  <p>作成日: 2025-11-16<br>レビュー担当: 自動レビュー (エージェント)</p>
+
+  <h2>要約</h2>
+  <p>起動シーケンスは概ね妥当です。BSSクリア、データコピー、SystemInit呼び出し、割り込み有効化、mainジャンプの順序は実装と一致しています。ただし以下の点で注意と改善提案があります。</p>
+
+  <h2>重要指摘 (優先度: 高)</h2>
+  <ul>
+    <li class="important"><strong>r0 のゼロ保証が明示されていない</strong><br>
+      現在 BSS クリアで <code>st.w r0, 0[r6]</code> を使用していますが、汎用レジスタ <code>r0</code> が常に 0 であることを保証していません。明示的にゼロをセットしてください（例: <code>movi 0, r0</code> 等）。この修正は致命的な誤動作を防ぎます。</li>
+
+    <li class="important"><strong>MOSC / PLL のポーリング時のタイムアウトとフォールバック処理</strong><br>
+      <code>system_rh850.c</code> 内の <code>SystemClockInit()</code> はポーリングで MOSC/PLL の安定化を待っていますが、タイムアウト時の取り扱いが不明瞭です。フローチャートではフォールバック/セーフモードへの遷移が示されていますが、コード側で明示的にフォールバックを行うか、エラーを返して上位で処理する実装にしてください。</li>
+
+    <li class="important"><strong>リンカシンボルの境界とアライメント</strong><br>
+      BSS とデータの 32bit アクセスを前提にしています。リンカスクリプトで <code>__sbss</code>/<code>__ebss</code> 等が 32bit 境界に揃っていることを確認してください。そうでない場合はヘッダでパディングやバイト単位処理の保険が必要です。</li>
+  </ul>
+
+  <h2>中程度の指摘 (優先度: 中)</h2>
+  <ul>
+    <li><strong>マジックナンバーの定義化</strong>: <code>0x00BF</code> などは意味を示すシンボル (例: <code>#define EIC_MASK 0x00BF</code>) に置き換えると可読性が上がります。</li>
+    <li><strong>割り込み初期化の可読性</strong>: <code>InterruptInit()</code> は現状安全な逐次ループですが、パフォーマンス最適化を行う場合は可搬性とテストを重視してください（今回の要望で元に戻しています）。</li>
+    <li><strong>コメントの充実</strong>: ASM の各ブロックに前提条件（例: レジスタ使い方、影響範囲）を追記すると将来保守が楽になります。</li>
+  </ul>
+
+  <h2>具体的な改善案 (パッチ例)</h2>
+  <p>安全かつ最小変更で導入できるパッチ例を示します。</p>
+  <h3>1) <code>r0</code> をゼロで初期化（BSSクリアの直前）</h3>
+  <pre><code>; 追加: BSSクリア前に r0 を明示的にゼロにする
+movi    0, r0        ; r0 = 0</code></pre>
+  <p>（注）RH850 の命令セットで即値ロードの命令名が環境により異なる場合があるため、ご利用のアセンブラに合わせて命令を選んでください。</p>
+
+  <h3>2) <code>SystemClockInit()</code> のタイムアウト検出を呼び出し元に伝える</h3>
+  <pre><code>int SystemClockInit(void)
+{
+  if (m osc_timeout) { return -1; }
+  if (pll_timeout)  { return -2; }
+  return 0;
+}
+
+/* 呼び出し元 */
+if ( SystemClockInit() != 0 ) {
+  /* フォールバック処理またはブートローダ移行 */
+}</code></pre>
+
+  <h2>既に行った小変更（本リポジトリで実施済み）</h2>
+  <ul>
+    <li>`src/cstartup.asm` に BSS クリアの目的・レジスタ割当・32bit アクセスの注記を追加しました。</li>
+    <li>一時的にアンローリングして性能評価を行った変更を、ユーザーの指示で元に戻しました（アンローリングは履歴に残っています）。</li>
+  </ul>
+
+  <h2>推奨アクション（優先順）</h2>
+  <ol>
+    <li>最優先で <code>r0 = 0</code> を明示的に設定するパッチを適用する。</li>
+    <li><code>SystemClockInit()</code> にエラーコードを導入し、フォールバックや明示的停止経路を実装する。</li>
+    <li>リンカスクリプトを確認し、BSS/Data 範囲の 32bit アライメントを保証する。</li>
+    <li>マジックナンバーを定義化して可読性を向上する。</li>
+  </ol>
+
+  <h2>参考: 関連ファイル</h2>
+  <ul>
+    <li><code>src/cstartup.asm</code> — 起動コード（レビュー対象）</li>
+    <li><code>src/system_rh850.c</code> — SystemInit の実装（クロック/割り込み初期化）</li>
+    <li><code>RH850_F1KMS1_Startup/Detailed_Design.html</code> — ドキュメントとフローチャート（SVG）</li>
+  </ul>
+
+  <h2>次のステップ</h2>
+  <p>自動適用可能な小さなパッチが必要であれば私が作成してコミットします。優先する修正名を短く教えてください（例: <code>r0-zero</code>, <code>systeminit-error</code>, <code>define-magic</code>）。</p>
+
+  <footer>
+    <p style="font-size:0.9em;color:#666">このファイルは自動生成されたコードレビュー報告書です。更なる手動確認や実機テストを必ず行ってください。</p>
+  </footer>
+</body>
+</html>
