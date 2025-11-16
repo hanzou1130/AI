@@ -91,6 +91,78 @@
     </g>
     <text x="450" y="1160" text-anchor="middle" class="text">図: ブートからアプリケーション開始までの主要ステップ</text>
   </svg>
+  <h3>Startup Flow with Error Branches（エラー分岐）</h3>
+  <!-- inlined from diagrams/startup_flowchart_with_errors.svg -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1400" viewBox="0 0 1000 1400" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
+    <style>
+      .box { fill:#fff; stroke:#0b3b75; stroke-width:2px; rx:6 }
+      .alt { fill:#f7fbff }
+      .fail { fill:#fff5f5; stroke:#c92a2a; stroke-width:2px }
+      .text { font-family: Arial, Helvetica, sans-serif; font-size:12px; fill:#111 }
+      .title { font-size:16px; font-weight:700; fill:#0b3b75 }
+      .arrow { stroke:#333; stroke-width:2px; fill:none; marker-end:url(#arrow) }
+    </style>
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+      </marker>
+    </defs>
+    <text x="500" y="30" text-anchor="middle" class="title">Startup Flow with Error Branches</text>
+    <g transform="translate(40,60)">
+      <rect x="340" y="10" width="300" height="28" class="box"/>
+      <text x="490" y="24" text-anchor="middle" dominant-baseline="middle" class="text">Reset Vector (_RESET)</text>
+      <path class="arrow" d="M490 60 L490 110" />
+
+      <rect x="340" y="110" width="300" height="28" class="alt"/>
+      <text x="490" y="124" text-anchor="middle" dominant-baseline="middle" class="text">_start (cstartup.asm)</text>
+      <path class="arrow" d="M490 170 L490 210" />
+
+      <rect x="340" y="210" width="300" height="28" class="box"/>
+      <text x="490" y="224" text-anchor="middle" dominant-baseline="middle" class="text">Disable interrupts; Init SP</text>
+      <path class="arrow" d="M490 268 L490 310" />
+
+      <rect x="340" y="310" width="300" height="28" class="alt"/>
+      <text x="490" y="324" text-anchor="middle" dominant-baseline="middle" class="text">BSS Clear; Data copy (ROM→RAM)</text>
+      <path class="arrow" d="M490 378 L490 430" />
+
+      <rect x="340" y="430" width="300" height="28" class="box"/>
+      <text x="490" y="444" text-anchor="middle" dominant-baseline="middle" class="text">Optional: Verify data (CRC)</text>
+      <path class="arrow" d="M490 498 L490 540" />
+
+      <rect x="340" y="540" width="300" height="28" class="alt"/>
+      <text x="490" y="554" text-anchor="middle" dominant-baseline="middle" class="text">Verify OK</text>
+      <rect x="340" y="600" width="300" height="28" class="fail"/>
+      <text x="490" y="614" text-anchor="middle" dominant-baseline="middle" class="text">Verify FAIL → bootloader / restore</text>
+
+      <path class="arrow" d="M260 614 L340 614" />
+      <path class="arrow" d="M640 614 L640 660" />
+      <path class="arrow" d="M640 660 L490 700" />
+
+      <rect x="340" y="630" width="300" height="28" class="box"/>
+      <text x="490" y="644" text-anchor="middle" dominant-baseline="middle" class="text">Call SystemInit()</text>
+      <path class="arrow" d="M490 696 L490 740" />
+
+      <rect x="340" y="740" width="300" height="28" class="box"/>
+      <text x="490" y="754" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit OK</text>
+      <rect x="340" y="800" width="300" height="28" class="fail"/>
+      <text x="490" y="814" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit FAIL → Safe Mode / Halt</text>
+
+      <path class="arrow" d="M300 814 L340 814" />
+      <path class="arrow" d="M640 814 L640 840" />
+
+      <rect x="340" y="840" width="300" height="28" class="alt"/>
+      <text x="490" y="854" text-anchor="middle" dominant-baseline="middle" class="text">Enable interrupts; Jump to main()</text>
+      <path class="arrow" d="M490 896 L490 940" />
+
+      <rect x="340" y="940" width="300" height="28" class="box"/>
+      <text x="490" y="954" text-anchor="middle" dominant-baseline="middle" class="text">main() — Application (正常動作)</text>
+
+      <rect x="340" y="1040" width="300" height="28" class="fail"/>
+      <text x="490" y="1054" text-anchor="middle" dominant-baseline="middle" class="text">Safe Mode / Error LED / Wait for host update</text>
+    </g>
+
+    <text x="500" y="1360" text-anchor="middle" class="text">注: フェイルパスは製品要件に合わせて設計してください。例: 再試行回数・フェイル時の挙動・ログ出力方法など。</text>
+  </svg>
   <h3>詳細フロー図</h3>
   <p>起動メインフロー（細分化）</p>
   <!-- inline Detailed Startup Flow SVG -->
