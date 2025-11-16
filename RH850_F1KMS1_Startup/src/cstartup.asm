@@ -103,14 +103,26 @@ _start:
         movea   lo(__ebss), r7, r7
         br      _bss_check
 _bss_loop:
-        st.w    r0, 0[r6]                 ; Clear word (zero the RAM)
-        add     4, r6                     ; Next word (word size = 4)
+        ; --- アンローリング: 2 ワードずつ書き込むことで分岐回数を半分にする ---
+        st.w    r0, 0[r6]                 ; Clear word
+        add     4, r6                     ; r6 += 4
+        cmp     r7, r6
+        bl      _bss_tail                 ; if r6 >= r7 fall through to tail
+        st.w    r0, 0[r6]                 ; Clear next word
+        add     4, r6                     ; r6 += 4
 _bss_check:
         cmp     r7, r6                    ; Done? (r6 >= r7)
         bl      _bss_loop                 ; Loop if r6 < r7
+_bss_tail:
+        ; ループの余り（奇数ワード分）がある場合はここで処理
+        cmp     r7, r6
+        bl      _bss_done                 ; 既に終端なら終了
+        st.w    r0, 0[r6]
+_bss_done:
 
         ; Copy initialized data from ROM to RAM
         ; - 実装: 32ビット (ワード = 32bit) 単位でコピー (ld.w / st.w を使用)
+        ; - 最適化: 2 ワードずつアンローリングして分岐オーバーヘッドを削減
         ; - レジスタ: r6 = source (ROM), r7 = destination (RAM), r8 = end (address)
         movhi   hi(__sdata_rom), r0, r6   ; r6 = source (ROM)
         movea   lo(__sdata_rom), r6, r6
@@ -120,13 +132,26 @@ _bss_check:
         movea   lo(__edata), r8, r8
         br      _data_check
 _data_loop:
-        ld.w    0[r6], r9                 ; Load from ROM
-        st.w    r9, 0[r7]                 ; Store to RAM
-        add     4, r6                     ; Next source
-        add     4, r7                     ; Next destination
+        ; --- アンローリング: 2 ワードずつコピー ---
+        ld.w    0[r6], r9                 ; Load word0
+        st.w    r9, 0[r7]                 ; Store word0
+        add     4, r6
+        add     4, r7
+        cmp     r8, r7
+        bl      _data_tail                ; if r7 >= r8 go to tail
+        ld.w    0[r6], r9                 ; Load word1
+        st.w    r9, 0[r7]                 ; Store word1
+        add     4, r6
+        add     4, r7
 _data_check:
         cmp     r8, r7                    ; Check if done
         bl      _data_loop                ; Loop if r7 < r8
+_data_tail:
+        cmp     r8, r7
+        bl      _data_done
+        ld.w    0[r6], r9
+        st.w    r9, 0[r7]
+_data_done:
 
         ; Call system initialization
         jarl    _SystemInit, lp
