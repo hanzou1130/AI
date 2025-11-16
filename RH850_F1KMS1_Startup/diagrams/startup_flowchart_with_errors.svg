@@ -16,55 +16,55 @@
   <text x="500" y="30" text-anchor="middle" class="title">Startup Flow with Error Branches</text>
   <g transform="translate(40,60)">
     <rect x="340" y="10" width="300" height="28" class="box"/>
-    <text x="500" y="40" text-anchor="middle" class="text">Reset Vector (_RESET)</text>
+    <text x="500" y="24" text-anchor="middle" dominant-baseline="middle" class="text">Reset Vector (_RESET)</text>
     <path class="arrow" d="M500 60 L500 110" />
 
     <rect x="340" y="110" width="300" height="28" class="alt"/>
-    <text x="500" y="142" text-anchor="middle" class="text">_start (cstartup.asm)</text>
+    <text x="500" y="124" text-anchor="middle" dominant-baseline="middle" class="text">_start (cstartup.asm)</text>
     <path class="arrow" d="M500 170 L500 210" />
 
     <rect x="340" y="210" width="300" height="28" class="box"/>
-    <text x="500" y="242" text-anchor="middle" class="text">Disable interrupts; Init SP</text>
+    <text x="500" y="224" text-anchor="middle" dominant-baseline="middle" class="text">Disable interrupts; Init SP</text>
     <path class="arrow" d="M500 268 L500 310" />
 
     <rect x="340" y="310" width="300" height="28" class="alt"/>
-    <text x="500" y="342" text-anchor="middle" class="text">BSS Clear; Data copy (ROM→RAM)</text>
+    <text x="500" y="324" text-anchor="middle" dominant-baseline="middle" class="text">BSS Clear; Data copy (ROM→RAM)</text>
     <path class="arrow" d="M500 378 L500 430" />
 
     <rect x="340" y="430" width="300" height="28" class="box"/>
-    <text x="500" y="462" text-anchor="middle" class="text">Optional: Verify data (CRC)</text>
+    <text x="500" y="444" text-anchor="middle" dominant-baseline="middle" class="text">Optional: Verify data (CRC)</text>
     <path class="arrow" d="M500 498 L500 540" />
 
     <rect x="340" y="540" width="300" height="28" class="alt"/>
-    <text x="500" y="572" text-anchor="middle" class="text">Verify OK</text>
+    <text x="500" y="554" text-anchor="middle" dominant-baseline="middle" class="text">Verify OK</text>
     <rect x="340" y="600" width="300" height="28" class="fail"/>
-    <text x="500" y="632" text-anchor="middle" class="text">Verify FAIL → bootloader / restore</text>
+    <text x="500" y="614" text-anchor="middle" dominant-baseline="middle" class="text">Verify FAIL → bootloader / restore</text>
 
     <path class="arrow" d="M260 596 L500 630" />
     <path class="arrow" d="M740 596 L740 660" />
     <path class="arrow" d="M740 660 L500 700" />
 
     <rect x="340" y="630" width="300" height="28" class="box"/>
-    <text x="500" y="662" text-anchor="middle" class="text">Call SystemInit()</text>
+    <text x="500" y="644" text-anchor="middle" dominant-baseline="middle" class="text">Call SystemInit()</text>
     <path class="arrow" d="M500 696 L500 740" />
 
     <rect x="340" y="740" width="300" height="28" class="box"/>
-    <text x="500" y="772" text-anchor="middle" class="text">SystemInit OK</text>
+    <text x="500" y="754" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit OK</text>
     <rect x="340" y="800" width="300" height="28" class="fail"/>
-    <text x="500" y="832" text-anchor="middle" class="text">SystemInit FAIL → Safe Mode / Halt</text>
+    <text x="500" y="814" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit FAIL → Safe Mode / Halt</text>
 
     <path class="arrow" d="M300 796 L500 840" />
     <path class="arrow" d="M700 796 L700 840" />
 
     <rect x="340" y="840" width="300" height="28" class="alt"/>
-    <text x="500" y="872" text-anchor="middle" class="text">Enable interrupts; Jump to main()</text>
+    <text x="500" y="854" text-anchor="middle" dominant-baseline="middle" class="text">Enable interrupts; Jump to main()</text>
     <path class="arrow" d="M500 896 L500 940" />
 
     <rect x="340" y="940" width="300" height="28" class="box"/>
-    <text x="500" y="972" text-anchor="middle" class="text">main() — Application (正常動作)</text>
+    <text x="500" y="954" text-anchor="middle" dominant-baseline="middle" class="text">main() — Application (正常動作)</text>
 
     <rect x="340" y="1040" width="300" height="28" class="fail"/>
-    <text x="500" y="1072" text-anchor="middle" class="text">Safe Mode / Error LED / Wait for host update</text>
+    <text x="500" y="1054" text-anchor="middle" dominant-baseline="middle" class="text">Safe Mode / Error LED / Wait for host update</text>
   </g>
 
   <text x="500" y="1360" text-anchor="middle" class="text">注: フェイルパスは製品要件に合わせて設計してください。例: 再試行回数・フェイル時の挙動・ログ出力方法など。</text>
