@@ -1,0 +1,31 @@
+========================================
+Building RH850 Scheduler Project
+========================================
+
+[1/5] Assembling boot.asm...
+src\boot.asm(182):W0550013:r1がレジスタとしてオペランドに指定されています。
+src\boot.asm(186):W0550013:r1がレジスタとしてオペランドに指定されています。
+src\boot.asm(195):W0550013:r1がレジスタとしてオペランドに指定されています。
+src\boot.asm(199):W0550013:r1がレジスタとしてオペランドに指定されています。
+
+[2/5] Compiling system_rh850.c...
+
+[3/5] Compiling main.c...
+
+[4/7] Compiling scheduler.c...
+
+[5/7] Compiling tauj_timer.c...
+
+[6/7] Compiling linker_symbols.c...
+
+[6.5/7] Assembling crt_symbols.asm...
+src\crt_symbols.asm(6):E0550249:構成に誤りがあります。
+src\crt_symbols.asm(9):E0550249:構成に誤りがあります。
+src\crt_symbols.asm(12):E0550249:構成に誤りがあります。
+src\crt_symbols.asm(15):E0550249:構成に誤りがあります。
+src\crt_symbols.asm(18):E0550249:構成に誤りがあります。
+src\crt_symbols.asm(21):E0550249:構成に誤りがあります。
+
+========================================
+Build failed with errors!
+========================================

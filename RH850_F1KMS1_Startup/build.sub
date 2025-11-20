@@ -1,0 +1,9 @@
+-CPU=RH850
+-OUTPUT=firmware.elf
+-LIST=firmware.map
+-NOOPTIMIZE
+-START=RESET/0
+boot.obj
+system_rh850.obj
+main.obj
+scheduler.obj

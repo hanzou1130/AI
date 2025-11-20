@@ -1,606 +1,762 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>RH850/F1KM-S1　詳細設計書</title>
-  <style>
-    :root {
-      --bg: #fbfdff;
-      --surface: #ffffff;
-      --primary: #2563eb; /* blue */
-      --accent: #06b6d4;  /* teal */
-      --success: #10b981; /* green */
-      --danger: #ef4444;  /* red */
-      --muted: #eef9fb;
-      --text: #0b2b3a;
-    }
-    body { font-family: Arial, Helvetica, sans-serif; line-height: 1.6; margin: 20px; color: var(--text); background: linear-gradient(180deg,#f8fbff 0%,var(--bg) 100%); }
-    h1 { color: #fff; margin:0; padding:18px; font-size:22px; }
-    h2,h3 { color: var(--primary); }
-    .doc-banner { background: linear-gradient(90deg,var(--primary),var(--accent)); border-radius:8px; padding:6px 12px; margin-bottom:18px; display:inline-block }
-    .doc-sub { color: #e6f2ff; font-size:13px; margin-top:6px }
-    pre { background: #001422; color: #e6f7ff; padding: 12px; overflow: auto; border-radius:6px }
-    table { border-collapse: collapse; width: 100%; background: var(--surface); border-radius:6px; overflow:hidden }
-    th { background: linear-gradient(90deg,#e6f3ff,#eef9ff); color: var(--primary); padding:8px; text-align:left }
-    td { border-top: 1px solid #eef3f8; padding:8px }
-    tbody tr:nth-child(odd) td { background: #fbfeff }
-    .legend { display:flex; gap:12px; align-items:center; margin:12px 0 }
-    .legend .item { display:flex; gap:8px; align-items:center }
-    .sw { width:18px; height:14px; border-radius:4px; display:inline-block }
-    a.repo { color:var(--accent) }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RH850/F1KM-S1 詳細設計書</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --bg-color: #ffffff;
+            --bg-alt: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: var(--bg-alt);
+            padding: 20px 40px;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #1e40af;
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: 0.95em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: var(--bg-alt);
+        }
+
+        .info-box {
+            background-color: #dbeafe;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .danger-box {
+            background-color: #fee2e2;
+            border-left: 4px solid var(--danger-color);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid var(--success-color);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .file-list {
+            background-color: var(--bg-alt);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .file-list ul {
+            margin-left: 0;
+            list-style: none;
+        }
+
+        .file-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+
+        .file-list code {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .diagram {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .diagram img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .diagram p {
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        footer {
+            background-color: var(--bg-alt);
+            padding: 30px 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 2px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .toc {
+            background-color: var(--bg-alt);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .toc ul {
+            margin-left: 20px;
+        }
+
+        .toc a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  <div class="doc-banner">
-    <h1>RH850/F1KM-S1　詳細設計書</h1>
-    <div class="doc-sub">Startup, SystemInit, フロー図 と リファレンス</div>
-  </div>
-  <h2>概要</h2>
-  <p>この文書は RH850/F1KM-S1 向けに作成したスタートアップ一式（アセンブリ、リンカスクリプト、システム初期化、サンプルアプリ）についての詳細設計を示します。</p>
-  <h2>ファイル一覧</h2>
-  <ul>
-    <li><code>src/cstartup.asm</code> : スタートアップ（リセットベクタ、BSSクリア、データコピー、SystemInit 呼び出し）</li>
-    <li><code>linker_script.ld</code>  : メモリマップとセクション割当</li>
-    <li><code>src/system_rh850.c</code> : システム初期化（MainOSC/PLL/クロック分周、割り込み初期化）</li>
-    <li><code>inc/system_rh850.h</code> : システム初期化のヘッダ</li>
-    <li><code>inc/rh850_regs.h</code>   : レジスタ定義</li>
-    <li><code>src/main.c</code>        : サンプルアプリ（LED点滅）</li>
-  </ul>
-  <h2>メモリマップ</h2>
-  <table>
-    <thead>
-      <tr><th>領域</th><th>開始アドレス</th><th>サイズ</th><th>用途</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Code Flash</td><td>0x00000000</td><td>2MB</td><td>プログラムコード</td></tr>
-      <tr><td>Data Flash</td><td>0x01000000</td><td>64KB</td><td>データ保存</td></tr>
-      <tr><td>RAM</td><td>0xFEDE8000</td><td>256KB</td><td>データ・スタック</td></tr>
-    </tbody>
-  </table>
-  <h2>起動シーケンス</h2>
-  <ol>
-    <li>リセットベクタ（<code>_RESET</code>）から <code>_start</code> へジャンプ</li>
-    <li>割り込み無効化（<code>di</code>）</li>
-    <li>スタックポインタ初期化（<code>SP = 0xFEE28000</code>、movhi/movea 使用）</li>
-    <li>BSS セクションクリア（<code>__sbss</code> ～ <code>__ebss</code>、ワード単位でゼロ埋め）</li>
-    <li>初期化データコピー（<code>__sdata_rom</code> → <code>__sdata</code> ～ <code>__edata</code>、ROM から RAM へワードコピー）</li>
-    <li><code>SystemInit()</code> 呼び出し（クロック設定・割り込みコントローラ初期化）</li>
-    <li>割り込み有効化（<code>ei</code>）</li>
-    <li><code>main()</code> へジャンプしてアプリケーション実行開始</li>
-  </ol>
-  <p><strong>注記:</strong> 例外ベクタテーブル（<code>__exception_table</code>）は 512 バイトアライメントで配置され、基本的な例外ハンドラ（RESET, SYSERR, TRAP 等）のエントリを含みます。実運用では各ハンドラを実装してください。</p>
-  <h2>関数構成図（コールグラフ）</h2>
-  <p>スタートアップからアプリケーション実行までの関数呼び出し関係を示します。</p>
-  <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;margin:16px 0">
-    <style>
-      .fn-box { fill:#fff; stroke:#10b981; stroke-width:2px; rx:8; }
-      .fn-entry { fill:#dbeafe; stroke:#2563eb; stroke-width:2.5px; }
-      .fn-system { fill:#fef3c7; stroke:#f59e0b; stroke-width:2px; }
-      .fn-app { fill:#fce7f3; stroke:#ec4899; stroke-width:2px; }
-      .fn-text { font-family: 'Courier New', monospace; font-size:13px; fill:#0a2a42; font-weight:600; }
-      .fn-desc { font-family: Arial, sans-serif; font-size:11px; fill:#475569; }
-      .fn-title { font-size:18px; font-weight:700; fill:#0b3b75; }
-      .fn-call { stroke:#10b981; stroke-width:2px; fill:none; marker-end:url(#fn-arrow); stroke-dasharray:none; }
-      .fn-call-sub { stroke:#64748b; stroke-width:1.5px; stroke-dasharray:4,3; fill:none; marker-end:url(#fn-arrow-sub); }
-    </style>
-    <defs>
-      <marker id="fn-arrow" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto">
-        <polygon points="0 0, 10 4, 0 8" fill="#10b981" />
-      </marker>
-      <marker id="fn-arrow-sub" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <polygon points="0 0, 8 3, 0 6" fill="#64748b" />
-      </marker>
-    </defs>
-    <text x="500" y="30" text-anchor="middle" class="fn-title">関数構成図 (Function Call Graph)</text>
+    <div class="container">
+        <header>
+            <h1>RH850/F1KM-S1 詳細設計書</h1>
+            <p>スタートアップコード・協調型スケジューラ システム設計仕様</p>
+        </header>
 
-    <!-- Entry Point -->
-    <rect x="400" y="60" width="200" height="50" class="fn-box fn-entry"/>
-    <text x="500" y="80" text-anchor="middle" class="fn-text">_RESET / _start</text>
-    <text x="500" y="96" text-anchor="middle" class="fn-desc">(cstartup.asm)</text>
-    <path class="fn-call" d="M500 110 L500 160"/>
+        <nav>
+            <ul>
+                <li><a href="#overview">概要</a></li>
+                <li><a href="#files">ファイル構成</a></li>
+                <li><a href="#memory">メモリマップ</a></li>
+                <li><a href="#boot">起動シーケンス</a></li>
+                <li><a href="#scheduler">スケジューラ</a></li>
+                <li><a href="#diagrams">図面</a></li>
+                <li><a href="#build">ビルド手順</a></li>
+            </ul>
+        </nav>
 
-    <!-- SystemInit -->
-    <rect x="400" y="160" width="200" height="50" class="fn-box fn-system"/>
-    <text x="500" y="180" text-anchor="middle" class="fn-text">SystemInit()</text>
-    <text x="500" y="196" text-anchor="middle" class="fn-desc">(system_rh850.c)</text>
-    
-    <!-- SystemInit branches -->
-    <path class="fn-call" d="M400 185 L250 240"/>
-    <path class="fn-call" d="M600 185 L750 240"/>
+        <main>
+            <!-- 概要 -->
+            <section id="overview">
+                <h2>📋 概要</h2>
+                <div class="info-box">
+                    <p><strong>目的:</strong> ブートからアプリケーション開始までの動作を明確化し、移植・保守・レビューを支援する。</p>
+                    <p><strong>対象デバイス:</strong> Renesas RH850/F1KM-S1</p>
+                </div>
+                <p>この文書は RH850/F1KM-S1 向けに作成したスタートアップ一式（アセンブリ、リンカスクリプト、システム初期化、協調型スケジューラ、サンプルアプリ）についての詳細設計を示します。</p>
+            </section>
 
-    <!-- SystemClockInit -->
-    <rect x="150" y="240" width="200" height="50" class="fn-box fn-system"/>
-    <text x="250" y="260" text-anchor="middle" class="fn-text">SystemClockInit()</text>
-    <text x="250" y="276" text-anchor="middle" class="fn-desc">クロック設定</text>
+            <!-- ファイル一覧 -->
+            <section id="files">
+                <h2>📁 ファイル構成</h2>
+                <div class="file-list">
+                    <ul>
+                        <li><code>src/cstartup.asm</code> - スタートアップ（リセットベクタ、BSSクリア、データコピー、SystemInit 呼び出し）</li>
+                        <li><code>linker_script.ld</code> - メモリマップとセクション割当</li>
+                        <li><code>src/system_rh850.c</code> - システム初期化（MainOSC/PLL/クロック分周、割り込み初期化）</li>
+                        <li><code>inc/system_rh850.h</code> - システム初期化のヘッダ</li>
+                        <li><code>inc/rh850_regs.h</code> - レジスタ定義（例: MOSC/PLL/INTC）</li>
+                        <li><code>src/scheduler.c</code> - 協調型スケジューラ実装（タスク管理、周期実行、1msタイマー連携）</li>
+                        <li><code>inc/scheduler.h</code> - スケジューラAPI定義</li>
+                        <li><code>src/main.c</code> - サンプルアプリ（スケジューラによるLED点滅とカウンタ更新）</li>
+                    </ul>
+                </div>
+            </section>
 
-    <!-- InterruptInit -->
-    <rect x="650" y="240" width="200" height="50" class="fn-box fn-system"/>
-    <text x="750" y="260" text-anchor="middle" class="fn-text">InterruptInit()</text>
-    <text x="750" y="276" text-anchor="middle" class="fn-desc">割り込み初期化</text>
+            <!-- メモリマップ -->
+            <section id="memory">
+                <h2>💾 メモリマップ</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>領域</th>
+                            <th>開始アドレス</th>
+                            <th>終了アドレス</th>
+                            <th>サイズ</th>
+                            <th>用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Code Flash</strong></td>
+                            <td>0x0000_0000</td>
+                            <td>0x001F_FFFF</td>
+                            <td>2MB</td>
+                            <td>プログラムコード</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Flash</strong></td>
+                            <td>0x0100_0000</td>
+                            <td>0x0100_FFFF</td>
+                            <td>64KB</td>
+                            <td>データ保存</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RAM</strong></td>
+                            <td>0xFEDE_8000</td>
+                            <td>0xFEE2_7FFF</td>
+                            <td>256KB</td>
+                            <td>データ・スタック</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    <!-- SystemClockInit details -->
-    <path class="fn-call-sub" d="M250 290 L180 340"/>
-    <path class="fn-call-sub" d="M250 290 L250 340"/>
-    <path class="fn-call-sub" d="M250 290 L320 340"/>
+                <h3>スタック・ヒープ設定</h3>
+                <ul>
+                    <li><strong>スタック:</strong> 8KB (<code>__stack_size = 0x2000</code>)</li>
+                    <li><strong>ヒープ:</strong> 16KB (<code>__heap_size = 0x4000</code>)</li>
+                </ul>
+            </section>
 
-    <rect x="80" y="340" width="120" height="38" class="fn-box" style="fill:#f0fdf4"/>
-    <text x="140" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">MainOSC 有効化</text>
-    <text x="140" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">MOSCE=0x01</text>
+            <!-- 起動シーケンス -->
+            <section id="boot">
+                <h2>🚀 起動シーケンス</h2>
+                <h3>起動フロー概要</h3>
+                <ol>
+                    <li><strong>リセットベクタ</strong> - ブートローダ/ROM によりリセットベクタへジャンプ（<code>_RESET</code>）</li>
+                    <li><strong>スタートアップ実行</strong> - <code>cstartup.asm::_start</code> 実行
+                        <ul>
+                            <li>割り込み無効化 (<code>di</code>)</li>
+                            <li>スタックポインタ設定 (<code>SP_INIT = 0xFEE28000</code>)</li>
+                            <li>BSS（<code>__sbss</code>〜<code>__ebss</code>）をゼロクリア</li>
+                            <li>初期化データ（ROM上の <code>__sdata_rom</code>）を RAM の <code>__sdata</code> へコピー</li>
+                            <li><code>SystemInit()</code> を呼び出し</li>
+                            <li>割り込み有効化 (<code>ei</code>)</li>
+                            <li><code>main()</code> へ分岐</li>
+                        </ul>
+                    </li>
+                    <li><strong>アプリケーション開始</strong> - <code>main()</code> 実行
+                        <ul>
+                            <li>GPIO初期化（LED制御用）</li>
+                            <li>スケジューラ初期化 (<code>Scheduler_Init()</code>)</li>
+                            <li>タスク登録
+                                <ul>
+                                    <li>LED点滅タスク（500ms周期）</li>
+                                    <li>カウンタ更新タスク（500ms周期）</li>
+                                </ul>
+                            </li>
+                            <li>スケジューラ開始 (<code>Scheduler_Run()</code> - 無限ループ、復帰しない)</li>
+                        </ul>
+                    </li>
+                </ol>
 
-    <rect x="190" y="340" width="120" height="38" class="fn-box" style="fill:#f0fdf4"/>
-    <text x="250" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">PLL 設定</text>
-    <text x="250" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">PLLC0 設定</text>
+                <h3>BSS と Data 初期化アルゴリズム</h3>
+                <div class="info-box">
+                    <p><strong>BSS:</strong> <code>r6</code> を <code>__sbss</code>、<code>r7</code> を <code>__ebss</code> にしてワード単位で 0 を書き込む。ループ終了条件は <code>r6 >= r7</code>。</p>
+                    <p><strong>Data:</strong> <code>r6</code> をソース <code>__sdata_rom</code>、<code>r7</code> をデスティネーション <code>__sdata</code>、<code>r8</code> を <code>__edata</code> にしてワードコピー。終了は <code>r7 >= r8</code>。</p>
+                </div>
+            </section>
 
-    <rect x="300" y="340" width="120" height="38" class="fn-box" style="fill:#f0fdf4"/>
-    <text x="360" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">分周器設定</text>
-    <text x="360" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">CKSC 設定</text>
+            <!-- スケジューラ -->
+            <section id="scheduler">
+                <h2>⚙️ スケジューラモジュール詳細設計</h2>
+                
+                <h3>アーキテクチャ概要</h3>
+                <p>協調型（non-preemptive）スケジューラを実装。複数のタスクを周期的に実行し、1msタイマー割り込みによる時刻管理を行います。</p>
 
-    <!-- InterruptInit details -->
-    <path class="fn-call-sub" d="M750 290 L750 340"/>
-    <rect x="690" y="340" width="120" height="38" class="fn-box" style="fill:#fef9f0"/>
-    <text x="750" y="356" text-anchor="middle" class="fn-desc" style="font-size:11px">EIC 初期化</text>
-    <text x="750" y="370" text-anchor="middle" class="fn-desc" style="font-size:10px">512ch マスク設定</text>
+                <h3>主要機能</h3>
+                <ul>
+                    <li><span class="badge badge-primary">タスク管理</span> 最大8個のタスクを登録可能</li>
+                    <li><span class="badge badge-success">周期実行</span> 各タスクに設定された周期（ms単位）で実行</li>
+                    <li><span class="badge badge-warning">時刻管理</span> 1msタイマー割り込みでシステムティックをカウント</li>
+                </ul>
 
-    <!-- Return to startup -->
-    <path class="fn-call" d="M500 210 L500 440"/>
-    <text x="520" y="330" class="fn-desc" style="font-size:11px">復帰</text>
+                <h3>データ構造</h3>
+                <h4>タスク管理構造体 (<code>task_t</code>)</h4>
+                <pre><code>typedef struct {
+  void (*func)(void);      // タスク関数ポインタ
+  uint32_t period_ms;      // 実行周期（ミリ秒）
+  uint32_t last_run_ms;    // 最終実行時刻（ミリ秒）
+  uint8_t used;            // スロット使用フラグ（0: 未使用, 1: 使用中）
+} task_t;</code></pre>
 
-    <!-- main() -->
-    <rect x="400" y="440" width="200" height="50" class="fn-box fn-app"/>
-    <text x="500" y="460" text-anchor="middle" class="fn-text">main()</text>
-    <text x="500" y="476" text-anchor="middle" class="fn-desc">(main.c)</text>
+                <h4>定数・グローバル変数</h4>
+                <ul>
+                    <li><code>MAX_TASKS</code>: 8（同時登録可能な最大タスク数）</li>
+                    <li><code>s_tasks[MAX_TASKS]</code>: タスク管理テーブル（static）</li>
+                    <li><code>s_ticks_ms</code>: システムティックカウンタ（1ms単位、volatile）</li>
+                </ul>
 
-    <!-- main() branches (example) -->
-    <path class="fn-call-sub" d="M500 490 L420 540"/>
-    <path class="fn-call-sub" d="M500 490 L580 540"/>
+                <h3>API仕様</h3>
+                
+                <h4><code>void Scheduler_Init(void)</code></h4>
+                <div class="success-box">
+                    <p><strong>目的:</strong> スケジューラの初期化</p>
+                    <p><strong>処理内容:</strong></p>
+                    <ul>
+                        <li>全タスクスロットをクリア（未使用状態に設定）</li>
+                        <li>システムティックカウンタを0にリセット</li>
+                    </ul>
+                    <p><strong>呼び出しタイミング:</strong> <code>main()</code> 開始直後、タスク登録前</p>
+                </div>
 
-    <rect x="340" y="540" width="160" height="38" class="fn-box" style="fill:#fff1f2"/>
-    <text x="420" y="556" text-anchor="middle" class="fn-desc" style="font-size:11px">GPIO 初期化</text>
-    <text x="420" y="570" text-anchor="middle" class="fn-desc" style="font-size:10px">ポート設定</text>
+                <h4><code>int Scheduler_AddTask(void (*task)(void), uint32_t period_ms)</code></h4>
+                <div class="success-box">
+                    <p><strong>目的:</strong> タスクの登録</p>
+                    <p><strong>引数:</strong></p>
+                    <ul>
+                        <li><code>task</code>: 実行するタスク関数のポインタ</li>
+                        <li><code>period_ms</code>: タスクの実行周期（ミリ秒）</li>
+                    </ul>
+                    <p><strong>戻り値:</strong></p>
+                    <ul>
+                        <li><code>0</code>: 登録成功</li>
+                        <li><code>-1</code>: 登録失敗（空きスロットなし）</li>
+                    </ul>
+                </div>
 
-    <rect x="500" y="540" width="160" height="38" class="fn-box" style="fill:#fff1f2"/>
-    <text x="580" y="556" text-anchor="middle" class="fn-desc" style="font-size:11px">メインループ</text>
-    <text x="580" y="570" text-anchor="middle" class="fn-desc" style="font-size:10px">LED 制御等</text>
+                <h4><code>void Scheduler_Run(void)</code></h4>
+                <div class="warning-box">
+                    <p><strong>目的:</strong> スケジューラメインループの開始</p>
+                    <p><strong>注意:</strong> この関数は復帰しません（無限ループ）</p>
+                    <p><strong>処理内容:</strong></p>
+                    <ul>
+                        <li>無限ループで全タスクをスキャン</li>
+                        <li>現在時刻（<code>s_ticks_ms</code>）を取得</li>
+                        <li>経過時間が周期以上の場合、タスクを実行</li>
+                        <li>1ms待機して次のイテレーションへ</li>
+                    </ul>
+                </div>
 
-    <!-- Utility functions (optional) -->
-    <rect x="50" y="540" width="160" height="38" class="fn-box" style="fill:#fefce8"/>
-    <text x="130" y="556" text-anchor="middle" class="fn-text" style="font-size:11px">SystemDelay()</text>
-    <text x="130" y="570" text-anchor="middle" class="fn-desc" style="font-size:10px">ユーティリティ</text>
+                <h4><code>void Scheduler_TickISR(void)</code></h4>
+                <div class="info-box">
+                    <p><strong>目的:</strong> タイマー割り込みハンドラから呼ばれる時刻更新関数</p>
+                    <p><strong>処理内容:</strong> <code>s_ticks_ms</code> をインクリメント（1ms経過）</p>
+                    <p><strong>呼び出しタイミング:</strong> 1msタイマー割り込みハンドラ内</p>
+                </div>
 
-    <rect x="50" y="590" width="160" height="38" class="fn-box" style="fill:#fefce8"/>
-    <text x="130" y="606" text-anchor="middle" class="fn-text" style="font-size:11px">SystemGetCpuClock()</text>
-    <text x="130" y="620" text-anchor="middle" class="fn-desc" style="font-size:10px">クロック取得</text>
+                <h3>メモリ使用量</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>項目</th>
+                            <th>サイズ</th>
+                            <th>説明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>s_tasks[8]</code></td>
+                            <td>96バイト</td>
+                            <td>8 × sizeof(task_t) = 8 × 12バイト</td>
+                        </tr>
+                        <tr>
+                            <td><code>s_ticks_ms</code></td>
+                            <td>4バイト</td>
+                            <td>uint32_t</td>
+                        </tr>
+                        <tr>
+                            <td><strong>合計（RAM）</strong></td>
+                            <td><strong>約100バイト</strong></td>
+                            <td>静的確保</td>
+                        </tr>
+                        <tr>
+                            <td>スタック使用量</td>
+                            <td>約16〜50バイト</td>
+                            <td>ローカル変数 + タスク呼び出し</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    <path class="fn-call-sub" d="M340 559 L210 559"/>
-    <path class="fn-call-sub" d="M500 559 L210 609"/>
+                <h3>タイミング精度</h3>
+                <ul>
+                    <li><strong>システムティック精度:</strong> 1ms</li>
+                    <li><strong>オーバーフロー時間:</strong> 2<sup>32</sup> ms ≈ 49.7日（実用上十分）</li>
+                    <li><strong>最小実行周期:</strong> 1ms（タスク処理時間が1ms未満であることが前提）</li>
+                    <li><strong>ジッター:</strong> ±1ms程度（他タスクの処理時間に依存）</li>
+                </ul>
 
-    <!-- Legend -->
-    <g transform="translate(50,650)">
-      <rect x="0" y="0" width="50" height="20" class="fn-entry" rx="4"/>
-      <text x="58" y="14" class="fn-desc" style="font-size:11px">エントリポイント</text>
-      <rect x="180" y="0" width="50" height="20" class="fn-system" rx="4"/>
-      <text x="238" y="14" class="fn-desc" style="font-size:11px">システム初期化</text>
-      <rect x="360" y="0" width="50" height="20" class="fn-app" rx="4"/>
-      <text x="418" y="14" class="fn-desc" style="font-size:11px">アプリケーション</text>
-      <path d="M550 10 L600 10" class="fn-call"/>
-      <text x="608" y="14" class="fn-desc" style="font-size:11px">主要呼び出し</text>
-      <path d="M700 10 L750 10" class="fn-call-sub"/>
-      <text x="758" y="14" class="fn-desc" style="font-size:11px">補助/内部呼び出し</text>
-    </g>
-  </svg>
-  <h2>フローチャート</h2>
-  <p>ブート・スタートアップのフロー図（下図参照）</p>
-  <div class="legend" aria-hidden="true">
-    <div class="item"><span class="sw" style="background:#ffffff; border:2px solid #0b84ff"></span><span>標準ステップ</span></div>
-    <div class="item"><span class="sw" style="background:#e6fbf8; border:2px solid #06b6d4"></span><span>補助/代替ステップ</span></div>
-    <div class="item"><span class="sw" style="background:#fff0f0; border:2px solid #ff6b6b"></span><span>失敗 / フェイルパス</span></div>
-    <div class="item"><span class="sw" style="background:#f4f8ff; border:2px solid #2563eb"></span><span>情報 / 注記</span></div>
-  </div>
-  <svg xmlns="http://www.w3.org/2000/svg" width="900" height="1400" viewBox="0 0 900 1400" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
-    <style>
-      .box { fill: #ffffff; stroke:#0b84ff; stroke-width:2px; rx:8; }
-      .box.alt { fill:#e6fbf8; stroke:#06b6d4; stroke-width:2px; }
-      .decision { fill:#fff5e6; stroke:#f59e0b; stroke-width:2px; }
-      .text { font-family: Helvetica, Arial, sans-serif; font-size:12px; fill:#07263c; }
-      .small-text { font-size:10px; fill:#444; }
-      .title { font-size:16px; font-weight:700; fill:#074b9c; }
-      .arrow { stroke:#0b84ff; stroke-width:2px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead); }
-      .arrow-yes { stroke:#10b981; stroke-width:2px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead-yes); }
-      .arrow-no { stroke:#ef4444; stroke-width:2px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead-no); }
-    </style>
-    <defs>
-      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#0b84ff" />
-      </marker>
-      <marker id="arrowhead-yes" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#10b981" />
-      </marker>
-      <marker id="arrowhead-no" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" />
-      </marker>
-    </defs>
-    <text x="450" y="30" text-anchor="middle" class="title">RH850/F1KM-S1 起動フローチャート（ループ・分岐付き）</text>
-    <g transform="translate(100,60)">
-      <!-- リセットベクタ -->
-      <rect x="250" y="10" width="200" height="40" rx="20" class="box"/>
-      <text x="350" y="35" text-anchor="middle" class="text">リセットベクタ (_RESET)</text>
-      <path class="arrow" d="M350 50 L350 80" />
-      
-      <!-- _start -->
-      <rect x="250" y="80" width="200" height="40" class="box alt"/>
-      <text x="350" y="105" text-anchor="middle" class="text">_start (cstartup.asm)</text>
-      <path class="arrow" d="M350 120 L350 150" />
-      
-      <!-- 割り込み無効化 -->
-      <rect x="250" y="150" width="200" height="40" class="box"/>
-      <text x="350" y="175" text-anchor="middle" class="text">割り込み無効化 (di)</text>
-      <path class="arrow" d="M350 190 L350 220" />
-      
-      <!-- SP初期化 -->
-      <rect x="250" y="220" width="200" height="40" class="box alt"/>
-      <text x="350" y="240" text-anchor="middle" class="text">SP初期化</text>
-      <text x="350" y="254" text-anchor="middle" class="small-text">SP = 0xFEE28000</text>
-      <path class="arrow" d="M350 260 L350 290" />
-      
-      <!-- BSSクリア初期化 -->
-      <rect x="250" y="290" width="200" height="50" class="box"/>
-      <text x="350" y="310" text-anchor="middle" class="text">BSSクリア初期化</text>
-      <text x="350" y="325" text-anchor="middle" class="small-text">r6=__sbss, r7=__ebss</text>
-      <path class="arrow" d="M350 340 L350 370" />
-      
-      <!-- BSSループ条件 -->
-      <path d="M350 370 L 420 405 L 350 440 L 280 405 Z" class="decision"/>
-      <text x="350" y="408" text-anchor="middle" class="text">r6 &lt; r7 ?</text>
-      <text x="465" y="410" class="small-text">Yes</text>
-      <text x="235" y="410" class="small-text">No</text>
-      
-      <!-- BSSクリア処理 -->
-      <path class="arrow-yes" d="M420 405 L480 405 L480 480" />
-      <rect x="430" y="480" width="180" height="50" class="box alt"/>
-      <text x="520" y="500" text-anchor="middle" class="text">st.w r0, 0[r6]</text>
-      <text x="520" y="515" text-anchor="middle" class="small-text">add 4, r6</text>
-      <path class="arrow" d="M520 530 L520 560 L350 560 L350 440" />
-      
-      <!-- データコピー初期化 -->
-      <path class="arrow-no" d="M280 405 L210 405 L210 470" />
-      <rect x="120" y="470" width="180" height="60" class="box"/>
-      <text x="210" y="490" text-anchor="middle" class="text">データコピー初期化</text>
-      <text x="210" y="505" text-anchor="middle" class="small-text">r6=__sdata_rom</text>
-      <text x="210" y="518" text-anchor="middle" class="small-text">r7=__sdata, r8=__edata</text>
-      <path class="arrow" d="M210 530 L210 560" />
-      
-      <!-- データコピーループ条件 -->
-      <path d="M210 560 L 280 595 L 210 630 L 140 595 Z" class="decision"/>
-      <text x="210" y="598" text-anchor="middle" class="text">r7 &lt; r8 ?</text>
-      <text x="125" y="597" class="small-text">Yes</text>
-      <text x="295" y="597" class="small-text">No</text>
-      
-      <!-- データコピー処理 -->
-      <path class="arrow-yes" d="M140 595 L80 595 L80 670" />
-      <rect x="10" y="670" width="140" height="60" class="box alt"/>
-      <text x="80" y="690" text-anchor="middle" class="text">ld.w 0[r6], r9</text>
-      <text x="80" y="705" text-anchor="middle" class="text">st.w r9, 0[r7]</text>
-      <text x="80" y="720" text-anchor="middle" class="small-text">add 4,r6; add 4,r7</text>
-      <path class="arrow" d="M80 730 L80 760 L210 760 L210 630" />
-      
-      <!-- SystemInit呼び出し -->
-      <path class="arrow-no" d="M280 595 L350 595 L350 660" />
-      <rect x="250" y="660" width="200" height="40" class="box"/>
-      <text x="350" y="680" text-anchor="middle" class="text">SystemInit() 呼び出し</text>
-      <text x="350" y="694" text-anchor="middle" class="small-text">jarl _SystemInit, lp</text>
-      <path class="arrow" d="M350 700 L350 730" />
-      
-      <!-- 割り込み有効化 -->
-      <rect x="250" y="730" width="200" height="40" class="box alt"/>
-      <text x="350" y="755" text-anchor="middle" class="text">割り込み有効化 (ei)</text>
-      <path class="arrow" d="M350 770 L350 800" />
-      
-      <!-- main()へジャンプ -->
-      <rect x="250" y="800" width="200" height="50" class="box"/>
-      <text x="350" y="820" text-anchor="middle" class="text">main() へジャンプ</text>
-      <text x="350" y="835" text-anchor="middle" class="small-text">jmp [r6] (_main)</text>
-      <path class="arrow" d="M350 850 L350 880" />
-      
-      <!-- アプリケーション実行 -->
-      <rect x="250" y="880" width="200" height="40" rx="20" class="box alt"/>
-      <text x="350" y="905" text-anchor="middle" class="text">アプリケーション実行</text>
-    </g>
-    <text x="450" y="1360" text-anchor="middle" class="text">図: 実装に基づく起動フロー（BSSクリア・データコピーのループを含む）</text>
-  </svg>
-  <h3>起動フロー（エラー分岐・条件分岐付き）</h3>
-  <p>起動時の主要フロー:データ検証失敗、SystemInit失敗などのエラー分岐を含む</p>
-  <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1600" viewBox="0 0 1000 1600" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
-    <style>
-      .box { fill:#fff; stroke:#0b3b75; stroke-width:2px; rx:8; }
-      .alt { fill:#f0f9ff; stroke:#0ea5e9; stroke-width:2px; }
-      .decision { fill:#fef3c7; stroke:#f59e0b; stroke-width:2px; }
-      .fail { fill:#fee2e2; stroke:#ef4444; stroke-width:2px; }
-      .text { font-family: Arial, Helvetica, sans-serif; font-size:12px; fill:#111; }
-      .small-text { font-size:10px; fill:#555; }
-      .title { font-size:16px; font-weight:700; fill:#0b3b75; }
-      .arrow { stroke:#0b3b75; stroke-width:2px; fill:none; marker-end:url(#arr2); }
-      .arrow-yes { stroke:#10b981; stroke-width:2px; fill:none; marker-end:url(#arr-y2); }
-      .arrow-no { stroke:#ef4444; stroke-width:2px; fill:none; marker-end:url(#arr-n2); }
-    </style>
-    <defs>
-      <marker id="arr2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#0b3b75" />
-      </marker>
-      <marker id="arr-y2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#10b981" />
-      </marker>
-      <marker id="arr-n2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" />
-      </marker>
-    </defs>
-    <text x="500" y="30" text-anchor="middle" class="title">起動フロー（エラー分岐・条件分岐付き）</text>
-    <g transform="translate(60,60)">
-      <rect x="350" y="10" width="180" height="40" rx="20" class="box"/>
-      <text x="440" y="35" text-anchor="middle" class="text">_RESET / _start</text>
-      <path class="arrow" d="M440 50 L440 80"/>
-      <rect x="350" y="80" width="180" height="35" class="alt"/>
-      <text x="440" y="102" text-anchor="middle" class="text">割り込み無効化・SP初期化</text>
-      <path class="arrow" d="M440 115 L440 145"/>
-      <rect x="350" y="145" width="180" height="35" class="box"/>
-      <text x="440" y="167" text-anchor="middle" class="text">BSS・データコピー</text>
-      <path class="arrow" d="M440 180 L440 210"/>
-      <!-- データ検証 -->
-      <path d="M440 210 L510 245 L440 280 L370 245 Z" class="decision"/>
-      <text x="440" y="243" text-anchor="middle" class="text">データ検証</text>
-      <text x="440" y="257" text-anchor="middle" class="text">OK?</text>
-      <text x="525" y="248" class="small-text">Yes</text>
-      <text x="345" y="248" class="small-text">No</text>
-      <!-- 検証失敗パス -->
-      <path class="arrow-no" d="M370 245 L280 245 L280 320"/>
-      <rect x="200" y="320" width="160" height="50" class="fail"/>
-      <text x="280" y="338" text-anchor="middle" class="text">検証失敗</text>
-      <text x="280" y="353" text-anchor="middle" class="small-text">ブートローダ呼び出し</text>
-      <path class="arrow" d="M280 370 L280 1480 L440 1480"/>
-      <!-- SystemInit呼び出し -->
-      <path class="arrow-yes" d="M510 245 L600 245 L600 320"/>
-      <rect x="520" y="320" width="160" height="40" class="alt"/>
-      <text x="600" y="345" text-anchor="middle" class="text">SystemInit() 呼び出し</text>
-      <path class="arrow" d="M600 360 L600 390"/>
-      <!-- SystemInit成功判定 -->
-      <path d="M600 390 L670 425 L600 460 L530 425 Z" class="decision"/>
-      <text x="600" y="422" text-anchor="middle" class="text">SystemInit</text>
-      <text x="600" y="436" text-anchor="middle" class="text">成功?</text>
-      <text x="685" y="428" class="small-text">Yes</text>
-      <text x="505" y="428" class="small-text">No</text>
-      <!-- SystemInit失敗パス -->
-      <path class="arrow-no" d="M530 425 L460 425 L460 500"/>
-      <rect x="380" y="500" width="160" height="50" class="fail"/>
-      <text x="460" y="518" text-anchor="middle" class="text">SystemInit失敗</text>
-      <text x="460" y="533" text-anchor="middle" class="small-text">セーフモード/停止</text>
-      <path class="arrow" d="M460 550 L460 1480 L440 1480"/>
-      <!-- 正常フロー続行 -->
-      <path class="arrow-yes" d="M670 425 L740 425 L740 500"/>
-      <rect x="660" y="500" width="160" height="35" class="box"/>
-      <text x="740" y="522" text-anchor="middle" class="text">割り込み有効化 (ei)</text>
-      <path class="arrow" d="M740 535 L740 565"/>
-      <rect x="660" y="565" width="160" height="40" class="alt"/>
-      <text x="740" y="585" text-anchor="middle" class="text">main() へジャンプ</text>
-      <text x="740" y="599" text-anchor="middle" class="small-text">jmp [r6]</text>
-      <path class="arrow" d="M740 605 L740 645"/>
-      <rect x="660" y="645" width="160" height="40" rx="20" class="box"/>
-      <text x="740" y="670" text-anchor="middle" class="text">アプリケーション実行</text>
-      <!-- フェイルパス集約 -->
-      <rect x="360" y="1480" width="160" height="50" class="fail"/>
-      <text x="440" y="1498" text-anchor="middle" class="text">エラーハンドリング</text>
-      <text x="440" y="1513" text-anchor="middle" class="small-text">LED点滅/ログ出力/停止</text>
-    </g>
-    <text x="500" y="1580" text-anchor="middle" class="text">注: エラー時の動作（リトライ回数・フォールバック方法）はプロジェクト要件に応じて設計してください。</text>
-  </svg>
-  <h3>詳細フロー図</h3>
-  <p>起動メインフロー（細分化）</p>
-  <!-- inline Detailed Startup Flow SVG -->
-  <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1600" viewBox="0 0 1000 1600" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
-    <!-- inlined from diagrams/startup_flowchart_detailed.svg (compact boxes) -->
-    <style>
-      .box { fill: #ffffff; stroke:#7c3aed; stroke-width:1.6px; rx:6; }
-      .alt { fill:#f3efff; }
-      .text { font-family: Arial, Helvetica, sans-serif; font-size:11px; fill:#07263c; }
-      .title { font-size:16px; font-weight:700; fill:#6d28d9; }
-      .arrow { stroke:#7c3aed; stroke-width:1.6px; stroke-linecap:round; fill:none; marker-end: url(#arrowhead); }
-    </style>
-    <defs>
-      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
-      </marker>
-    </defs>
-    <text x="500" y="30" text-anchor="middle" class="title">起動フロー詳細（細分化）</text>
-    <g transform="translate(40,60)">
-      <rect x="340" y="10" width="300" height="28" class="box"/>
-      <text x="500" y="24" text-anchor="middle" dominant-baseline="middle" class="text">リセットベクタ (_RESET)</text>
-      <path class="arrow" d="M500 44 L500 104" />
-      <rect x="340" y="100" width="300" height="28" class="box alt"/>
-      <text x="500" y="114" text-anchor="middle" dominant-baseline="middle" class="text">_start (cstartup.asm) — 初期化エントリ</text>
-      <path class="arrow" d="M500 134 L500 194" />
-      <rect x="340" y="200" width="300" height="28" class="box"/>
-      <text x="500" y="214" text-anchor="middle" dominant-baseline="middle" class="text">割り込み無効化 (di)</text>
-      <path class="arrow" d="M500 234 L500 294" />
-      <rect x="340" y="290" width="300" height="28" class="box alt"/>
-      <text x="500" y="304" text-anchor="middle" dominant-baseline="middle" class="text">SP初期化 = 0xFEE28000</text>
-      <text x="500" y="322" text-anchor="middle" class="text" style="font-size:11px;">(movhi/movea でr3→sp設定)</text>
-      <path class="arrow" d="M500 334 L500 394" />
-      <rect x="340" y="400" width="300" height="28" class="box"/>
-      <text x="500" y="414" text-anchor="middle" dominant-baseline="middle" class="text">BSSクリア: __sbss～__ebss を 0 埋め</text>
-      <text x="500" y="434" text-anchor="middle" class="text" style="font-size:11px;">r6=__sbss, r7=__ebss; st.w r0,0[r6]; add 4,r6 でループ</text>
-      <path class="arrow" d="M500 454 L500 514" />
-      <rect x="340" y="520" width="300" height="28" class="box alt"/>
-      <text x="500" y="534" text-anchor="middle" dominant-baseline="middle" class="text">データコピー: ROM→RAM (__sdata_rom → __sdata)</text>
-      <text x="500" y="552" text-anchor="middle" class="text" style="font-size:11px;">r6=src, r7=dst, r8=end; ld.w/st.w でワードコピー</text>
-      <path class="arrow" d="M500 574 L500 634" />
-      <rect x="340" y="660" width="300" height="28" class="box"/>
-      <text x="500" y="674" text-anchor="middle" dominant-baseline="middle" class="text">（オプション）データ検証 / CRC / 保護レジスタ設定</text>
-      <path class="arrow" d="M500 696 L500 756" />
-      <rect x="340" y="780" width="300" height="28" class="box alt"/>
-      <text x="500" y="794" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit() 呼び出し (jarl)</text>
-      <path class="arrow" d="M500 816 L500 876" />
-      <rect x="340" y="880" width="300" height="28" class="box"/>
-      <text x="500" y="894" text-anchor="middle" dominant-baseline="middle" class="text">割り込み有効化 (ei)</text>
-      <path class="arrow" d="M500 916 L500 976" />
-      <rect x="340" y="980" width="300" height="28" class="box alt"/>
-      <text x="500" y="994" text-anchor="middle" dominant-baseline="middle" class="text">main() へジャンプ (jmp [r6])</text>
-      <path class="arrow" d="M500 1016 L500 1076" />
-      <rect x="340" y="1080" width="300" height="28" class="box"/>
-      <text x="500" y="1094" text-anchor="middle" dominant-baseline="middle" class="text">main() — アプリケーション開始</text>
-      <text x="500" y="1112" text-anchor="middle" class="text" style="font-size:11px;">(GPIO初期化 → メインループ → LED制御等)</text>
-    </g>
-    <text x="500" y="1500" text-anchor="middle" class="text">注: 例外ベクタは `__exception_table` に配置。必要に応じてハンドラを割当ててください。</text>
-  </svg>
-  <p>`SystemInit()` の詳細フロー（ループ・タイムアウト・分岐付き）</p>
-  <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1900" viewBox="0 0 1100 1900" style="max-width:100%;border:1px solid #ddd;padding:8px;background:#fff;">
-    <style>
-      .box { fill:#fff; stroke:#ff7a59; stroke-width:2px; rx:8; }
-      .alt { fill:#fff6f2; stroke:#ffae9a; stroke-width:2px; }
-      .decision { fill:#fef3c7; stroke:#f59e0b; stroke-width:2px; }
-      .fail { fill:#fee2e2; stroke:#ef4444; stroke-width:2px; }
-      .text { font-family: Arial, sans-serif; font-size:12px; fill:#111; }
-      .small-text { font-size:10px; fill:#555; }
-      .title { font-size:16px; font-weight:700; fill:#c2410c; }
-      .arrow { stroke:#ff7a59; stroke-width:2px; fill:none; marker-end:url(#arr-o); }
-      .arrow-yes { stroke:#10b981; stroke-width:2px; fill:none; marker-end:url(#arr-y); }
-      .arrow-no { stroke:#ef4444; stroke-width:2px; fill:none; marker-end:url(#arr-n); }
-    </style>
-    <defs>
-      <marker id="arr-o" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#ff7a59"/>
-      </marker>
-      <marker id="arr-y" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
-      </marker>
-      <marker id="arr-n" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/>
-      </marker>
-    </defs>
-    <text x="550" y="30" text-anchor="middle" class="title">SystemInit 詳細フロー（ループ・タイムアウト・分岐）</text>
-    <g transform="translate(80,60)">
-      <rect x="400" y="10" width="200" height="40" rx="20" class="box"/>
-      <text x="500" y="35" text-anchor="middle" class="text">SystemInit()</text>
-      <path class="arrow" d="M500 50 L500 80"/>
-      <rect x="400" y="80" width="200" height="40" class="alt"/>
-      <text x="500" y="105" text-anchor="middle" class="text">MOSCE = 0x01</text>
-      <path class="arrow" d="M500 120 L500 150"/>
-      <rect x="400" y="150" width="200" height="35" class="alt"/>
-      <text x="500" y="168" text-anchor="middle" class="text">timeout = 0</text>
-      <text x="500" y="181" text-anchor="middle" class="small-text">MAX=10000</text>
-      <path class="arrow" d="M500 185 L500 215"/>
-      <!-- MOSC ACTチェック -->
-      <path d="M500 215 L580 250 L500 285 L420 250 Z" class="decision"/>
-      <text x="500" y="248" text-anchor="middle" class="text">MOSCS.ACT</text>
-      <text x="500" y="262" text-anchor="middle" class="text">== 1?</text>
-      <text x="595" y="253" class="small-text">Yes</text>
-      <text x="395" y="253" class="small-text">No</text>
-      <!-- タイムアウトチェック -->
-      <path class="arrow-no" d="M420 250 L340 250 L340 325"/>
-      <path d="M340 325 L410 360 L340 395 L270 360 Z" class="decision"/>
-      <text x="340" y="357" text-anchor="middle" class="text">timeout &lt;</text>
-      <text x="340" y="371" text-anchor="middle" class="text">MAX?</text>
-      <text x="275" y="363" class="small-text">Yes</text>
-      <text x="420" y="363" class="small-text">No</text>
-      <!-- timeout++ -->
-      <path class="arrow-yes" d="M270 360 L200 360 L200 435"/>
-      <rect x="130" y="435" width="140" height="35" class="alt"/>
-      <text x="200" y="457" text-anchor="middle" class="text">timeout++</text>
-      <path class="arrow" d="M200 470 L200 500 L500 500 L500 285"/>
-      <!-- MOSC失敗 -->
-      <path class="arrow-no" d="M410 360 L480 360 L480 435"/>
-      <rect x="410" y="435" width="140" height="45" class="fail"/>
-      <text x="480" y="451" text-anchor="middle" class="text">MOSC失敗</text>
-      <text x="480" y="465" text-anchor="middle" class="small-text">停止/フォールバック</text>
-      <!-- PLL設定 -->
-      <path class="arrow-yes" d="M580 250 L700 250 L700 325"/>
-      <rect x="620" y="325" width="160" height="40" class="box"/>
-      <text x="700" y="345" text-anchor="middle" class="text">PLLC0 = 0x01</text>
-      <text x="700" y="358" text-anchor="middle" class="small-text">16MHz×15=240MHz</text>
-      <path class="arrow" d="M700 365 L700 395"/>
-      <rect x="620" y="395" width="160" height="35" class="alt"/>
-      <text x="700" y="411" text-anchor="middle" class="text">timeout = 0</text>
-      <text x="700" y="424" text-anchor="middle" class="small-text">MAX=1000</text>
-      <path class="arrow" d="M700 430 L700 460"/>
-      <!-- PLL ACTチェック -->
-      <path d="M700 460 L770 495 L700 530 L630 495 Z" class="decision"/>
-      <text x="700" y="492" text-anchor="middle" class="text">PLLS.ACT</text>
-      <text x="700" y="506" text-anchor="middle" class="text">== 1?</text>
-      <text x="785" y="498" class="small-text">Yes</text>
-      <text x="605" y="498" class="small-text">No</text>
-      <!-- PLLタイムアウト -->
-      <path class="arrow-no" d="M630 495 L550 495 L550 570"/>
-      <path d="M550 570 L615 605 L550 640 L485 605 Z" class="decision"/>
-      <text x="550" y="602" text-anchor="middle" class="text">timeout &lt;</text>
-      <text x="550" y="616" text-anchor="middle" class="text">MAX?</text>
-      <text x="490" y="608" class="small-text">Yes</text>
-      <text x="625" y="608" class="small-text">No</text>
-      <path class="arrow-yes" d="M485 605 L420 605 L420 680"/>
-      <rect x="350" y="680" width="140" height="35" class="alt"/>
-      <text x="420" y="702" text-anchor="middle" class="text">timeout++</text>
-      <path class="arrow" d="M420 715 L420 745 L700 745 L700 530"/>
-      <!-- PLL失敗 -->
-      <path class="arrow-no" d="M615 605 L680 605 L680 680"/>
-      <rect x="610" y="680" width="140" height="45" class="fail"/>
-      <text x="680" y="696" text-anchor="middle" class="text">PLL失敗</text>
-      <text x="680" y="710" text-anchor="middle" class="small-text">セーフクロック</text>
-      <!-- CKSC設定 -->
-      <path class="arrow-yes" d="M770 495 L850 495 L850 570"/>
-      <rect x="780" y="570" width="180" height="50" class="box"/>
-      <text x="870" y="588" text-anchor="middle" class="text">CKSC設定: CPU/2, Peri/4</text>
-      <text x="870" y="603" text-anchor="middle" class="small-text">ACT待ちポーリング</text>
-      <path class="arrow" d="M870 620 L870 660"/>
-      <!-- グローバル変数更新 -->
-      <rect x="780" y="660" width="180" height="45" class="alt"/>
-      <text x="870" y="677" text-anchor="middle" class="text">g_system_clock更新</text>
-      <text x="870" y="691" text-anchor="middle" class="small-text">g_peripheral_clock更新</text>
-      <path class="arrow" d="M870 705 L870 745"/>
-      <!-- InterruptInit -->
-      <rect x="780" y="745" width="180" height="40" class="box"/>
-      <text x="870" y="770" text-anchor="middle" class="text">InterruptInit()</text>
-      <path class="arrow" d="M870 785 L870 825"/>
-      <!-- EICループ初期化 -->
-      <rect x="780" y="825" width="180" height="40" class="alt"/>
-      <text x="870" y="845" text-anchor="middle" class="text">i = 0</text>
-      <path class="arrow" d="M870 865 L870 895"/>
-      <!-- ループ条件 -->
-      <path d="M870 895 L940 930 L870 965 L800 930 Z" class="decision"/>
-      <text x="870" y="932" text-anchor="middle" class="text">i &lt; 512?</text>
-      <text x="955" y="933" class="small-text">Yes</text>
-      <text x="775" y="933" class="small-text">No</text>
-      <!-- EIC設定 -->
-      <path class="arrow-yes" d="M940 930 L1000 930 L1000 1000"/>
-      <rect x="920" y="1000" width="160" height="50" class="box"/>
-      <text x="1000" y="1018" text-anchor="middle" class="text">EIC[i] = 0x00BF</text>
-      <text x="1000" y="1033" text-anchor="middle" class="small-text">マスク・優先度15</text>
-      <path class="arrow" d="M1000 1050 L1000 1080"/>
-      <rect x="920" y="1080" width="160" height="35" class="alt"/>
-      <text x="1000" y="1102" text-anchor="middle" class="text">i++</text>
-      <path class="arrow" d="M1000 1115 L1000 1145 L870 1145 L870 965"/>
-      <!-- 復帰 -->
-      <path class="arrow-no" d="M800 930 L730 930 L730 1000"/>
-      <rect x="640" y="1000" width="180" height="40" rx="20" class="alt"/>
-      <text x="730" y="1025" text-anchor="middle" class="text">cstartup へ復帰</text>
-    </g>
-    <text x="550" y="1860" text-anchor="middle" class="text">図: SystemInit実装に基づくクロック・割り込み初期化（MOSC/PLLタイムアウトループ、EIC初期化ループを含む）</text>
-  </svg>
-  <h2>BSS と Data 初期化</h2>
-  <p>BSS をワード単位で 0 埋め、データを ROM から RAM へワードコピーします。アライメントとセクションアドレスがリンカ設定と一致することを確認してください。</p>
-  <h2>SystemInit の詳細</h2>
-  <p>MainOSC の有効化、PLL の設定・待ち、クロック分周・切替、割り込みコントローラ初期化などを行います。`system_rh850.c` を参照してください。</p>
-  <h2>ビルド手順（参考）</h2>
-  <pre><code>rh850-elf-as -mcpu=g3m -o cstartup.o src/cstartup.asm
+                <h3>制限事項と注意点</h3>
+                <div class="danger-box">
+                    <ol>
+                        <li><strong>協調型スケジューリング:</strong> タスクは自発的にCPUを譲る必要がある。長時間処理を行うタスクは他のタスクの実行を遅延させる。</li>
+                        <li><strong>優先度なし:</strong> 全タスクは同等に扱われる。緊急タスクの優先実行は不可。</li>
+                        <li><strong>タスク数制限:</strong> 最大8個まで。追加が必要な場合は <code>MAX_TASKS</code> を変更。</li>
+                        <li><strong>オーバーフロー:</strong> <code>s_ticks_ms</code> は49.7日でオーバーフローするが、差分計算により正常動作。</li>
+                        <li><strong>再入不可:</strong> 同一タスクが実行中に再度呼ばれることはないが、タスク関数は再入可能に実装すべき。</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- 図面 -->
+            <section id="diagrams">
+                <h2>📊 設計図面</h2>
+                
+                <h3>システムアーキテクチャ図</h3>
+                <div class="diagram">
+                    <img src="diagrams/system_architecture.svg" alt="System Architecture">
+                    <p>システムは5層で構成: スタートアップ層、ハードウェア層、HAL/ドライバ層、OS/ミドルウェア層、アプリケーション層</p>
+                </div>
+
+                <h3>スケジューラフローチャート</h3>
+                <div class="diagram">
+                    <img src="diagrams/scheduler_flowchart.svg" alt="Scheduler Flowchart">
+                    <p>スケジューラの初期化からメインループまでの動作フロー</p>
+                </div>
+
+                <h3>スケジューラタイミングチャート</h3>
+                <div class="diagram">
+                    <img src="diagrams/scheduler_timing.svg" alt="Scheduler Timing">
+                    <p>Timer ISRと各タスクの実行タイミング（500ms周期）</p>
+                </div>
+            </section>
+
+            <!-- SystemInit -->
+            <section id="systeminit">
+                <h2>🔧 SystemInit の詳細</h2>
+                <p><code>system_rh850.c</code> における初期化処理:</p>
+                <ul>
+                    <li>MainOSC を有効化（<code>MOSCE = 0x01</code>）して安定化待ち（ポーリング）</li>
+                    <li>PLL を有効化 & 安定化待ち（<code>PLLC0</code>/<code>PLLS0</code>）</li>
+                    <li>CPU クロック、ペリフェラルクロックの分周・切替（<code>CKSC</code> 系レジスタ）</li>
+                    <li>割り込みコントローラ（EIC）を初期化して全チャネルをマスク＋最低優先度に設定</li>
+                    <li>グローバル変数 <code>g_system_clock</code>, <code>g_peripheral_clock</code> を設定</li>
+                </ul>
+
+                <div class="warning-box">
+                    <p><strong>注意:</strong> レジスタ書き込みが保護されている領域の場合はプロテクション解除手順を踏む必要があります。</p>
+                </div>
+
+                <h3>主要レジスタとアドレス</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>レジスタ</th>
+                            <th>アドレス</th>
+                            <th>用途</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>MOSCE</code></td>
+                            <td>0xFFF81100</td>
+                            <td>MainOSC 有効化</td>
+                        </tr>
+                        <tr>
+                            <td><code>MOSCS</code></td>
+                            <td>0xFFF81104</td>
+                            <td>MainOSC ステータス</td>
+                        </tr>
+                        <tr>
+                            <td><code>PLLC0</code></td>
+                            <td>0xFFF89000</td>
+                            <td>PLL 制御</td>
+                        </tr>
+                        <tr>
+                            <td><code>PLLS0</code></td>
+                            <td>0xFFF89004</td>
+                            <td>PLL ステータス</td>
+                        </tr>
+                        <tr>
+                            <td><code>INTC1_BASE</code></td>
+                            <td>0xFFFC0000</td>
+                            <td>割り込みコントローラ（EIC 配列）</td>
+                        </tr>
+                        <tr>
+                            <td><code>PORT0</code></td>
+                            <td>0xFFC10000</td>
+                            <td>GPIO Port 0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- ビルド手順 -->
+            <section id="build">
+                <h2>🔨 ビルド手順</h2>
+                <h3>必要なツール</h3>
+                <ul>
+                    <li>Renesas CS+ for CC または GHS MULTI (Green Hills Software)</li>
+                    <li>RH850用GCCツールチェーン（オープンソース版使用時）</li>
+                </ul>
+
+                <h3>コンパイル例（GCCの場合）</h3>
+                <pre><code># アセンブル
+rh850-elf-as -mcpu=g3m -o cstartup.o src/cstartup.asm
+
+# コンパイル
 rh850-elf-gcc -mcpu=g3m -O2 -I inc -c src/system_rh850.c -o system_rh850.o
+rh850-elf-gcc -mcpu=g3m -O2 -I inc -c src/scheduler.c -o scheduler.o
 rh850-elf-gcc -mcpu=g3m -O2 -I inc -c src/main.c -o main.o
-rh850-elf-ld -T linker_script.ld cstartup.o system_rh850.o main.o -o firmware.elf
+
+# リンク
+rh850-elf-ld -T linker_script.ld cstartup.o system_rh850.o scheduler.o main.o -o firmware.elf
+
+# HEX 生成
 rh850-elf-objcopy -O ihex firmware.elf firmware.hex</code></pre>
-  <h2>検証・注意点</h2>
-  <ul>
-    <li>ベクタテーブルと各ハンドラは実装状況に合わせて拡張すること</li>
-    <li>レジスタアドレスはサンプル値なので実機マニュアルと突合すること</li>
-    <li>保護レジスタやウォッチドッグに注意して初期化手順を行うこと</li>
-  </ul>
-  <h2>変更履歴</h2>
-  <ul>
-    <li>2025-11-16: 初版作成</li>
-  </ul>
+
+                <h3>検証/デバッグ手順</h3>
+                <ul>
+                    <li>JTAG/デバッガで RAM と ROM に正しいイメージを書き込み、リセット後に <code>main</code> に到達するか確認</li>
+                    <li>BSS セクション開始アドレスと終了アドレスが正しいか確認（未初期化変数が 0 になるか）</li>
+                    <li>Data コピー元アドレス (<code>__sdata_rom</code>) がリンカで期待した ROM 上の位置になっているかを検証</li>
+                    <li>クロック設定後に <code>SystemGetCpuClock()</code> の返り値が期待値か確認</li>
+                </ul>
+
+                <h3>カスタマイズ方法</h3>
+                <div class="info-box">
+                    <ul>
+                        <li><strong>スタックサイズ変更:</strong> <code>linker_script.ld</code> の <code>__stack_size</code> を更新</li>
+                        <li><strong>クロック設定変更:</strong> <code>system_rh850.c</code> の <code>PLL_MUL</code>, <code>CPU_DIV</code>, <code>PERIPHERAL_DIV</code> を更新</li>
+                        <li><strong>タスク数変更:</strong> <code>scheduler.c</code> の <code>MAX_TASKS</code> を更新</li>
+                        <li><strong>ベクタテーブル拡張:</strong> <code>cstartup.asm</code> の <code>__exception_table</code> に各ハンドララベルを追加</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 変更履歴 -->
+            <section id="changelog">
+                <h2>📝 変更履歴</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>バージョン</th>
+                            <th>変更内容</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2025-11-16</td>
+                            <td>1.0</td>
+                            <td>初版作成（スタートアップアセンブリ、リンカスクリプト、system init、サンプル main を反映）</td>
+                        </tr>
+                        <tr>
+                            <td>2025-11-17</td>
+                            <td>1.1</td>
+                            <td>スケジューラモジュール追加（協調型スケジューラ、タスク管理、1msタイマー連携の詳細設計を追加）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 RH850/F1KM-S1 プロジェクト | 詳細設計書 v1.1</p>
+            <p>作成日: 2025年11月17日 | 対象デバイス: Renesas RH850/F1KM-S1</p>
+        </footer>
+    </div>
 </body>
 </html>

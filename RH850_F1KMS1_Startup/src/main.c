@@ -9,6 +9,7 @@
  * Includes
  *--------------------------------------------------------------------------*/
 #include "system_rh850.h"
+#include "scheduler.h"
 
 /*----------------------------------------------------------------------------
  * Local Definitions
@@ -48,6 +49,8 @@ static uint32_t g_loop_counter = 0;
  *--------------------------------------------------------------------------*/
 static void GPIO_Init ( void );
 static void LED_Toggle ( void );
+static void Led_Task ( void );
+static void Counter_Task ( void );
 
 /*----------------------------------------------------------------------------
  * Function Implementations
@@ -61,19 +64,13 @@ int main ( void )
 {
   /* Initialize GPIO for LED control */
   GPIO_Init ();
-  
-  /* Main loop */
-  while ( 1 )
-  {
-    /* Toggle LED */
-    LED_Toggle ();
-    
-    /* Increment loop counter */
-    g_loop_counter++;
-    
-    /* Delay approximately 500ms */
-    SystemDelay ( 500 );
-  }
+  /* Initialize scheduler and register tasks */
+  Scheduler_Init ();
+  Scheduler_AddTask ( Led_Task,     500 );
+  Scheduler_AddTask ( Counter_Task, 500 );
+
+  /* Start scheduler (does not return) */
+  Scheduler_Run ();
   
   /* Never reached */
   return 0;
@@ -96,6 +93,18 @@ static void GPIO_Init ( void )
 static void LED_Toggle ( void )
 {
   PORT0->PNOT = (1U << LED_PIN);        /* Toggle pin using PNOT register */
+}
+
+/* Task executed by scheduler to toggle LED */
+static void Led_Task ( void )
+{
+  LED_Toggle ( );
+}
+
+/* Task executed by scheduler to update loop counter */
+static void Counter_Task ( void )
+{
+  g_loop_counter++;
 }
 
 /*** End of file ***/

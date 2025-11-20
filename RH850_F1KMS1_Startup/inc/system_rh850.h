@@ -17,7 +17,7 @@ extern "C" {
 /*----------------------------------------------------------------------------
  * Includes
  *--------------------------------------------------------------------------*/
-#include <stdint.h>
+#include "fixed_ints.h"
 
 /*----------------------------------------------------------------------------
  * System Clock Configuration
@@ -35,13 +35,6 @@ extern "C" {
  *--------------------------------------------------------------------------*/
 /* Clock Generator */
 #define CKSC_BASE               (0xFFF89000UL)
-#define MOSCE                   (*(volatile uint32_t *)(0xFFF81100UL))
-#define MOSCS                   (*(volatile uint32_t *)(0xFFF81104UL))
-#define MOSCST                  (*(volatile uint32_t *)(0xFFF8110CUL))
-
-/* PLL Control */
-#define PLLC0                   (*(volatile uint32_t *)(0xFFF89000UL))
-#define PLLS0                   (*(volatile uint32_t *)(0xFFF89004UL))
 
 /* Port Control */
 #define PORT_BASE               (0xFFC10000UL)

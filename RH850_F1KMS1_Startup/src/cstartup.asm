@@ -22,12 +22,16 @@
 ; Register Definitions
 ;------------------------------------------------------------------------------
         .set    SP_INIT, 0xFEE28000      ; Stack pointer initial value (top of RAM)
+        .set    WORD_SIZE, 4             ; Word size in bytes (32-bit)
+        .set    EXC_TABLE_ALIGN, 512     ; Exception table alignment (bytes)
+        .set    BSS_CLEAR_VALUE, 0       ; Value used to clear BSS
         
 ;------------------------------------------------------------------------------
 ; External Symbols
 ;------------------------------------------------------------------------------
         .extern _main
         .extern _SystemInit
+        .extern _Scheduler_TickISR
         .extern __sdata
         .extern __edata
         .extern __sbss
@@ -46,7 +50,7 @@
 ; Reset Vector
 ;------------------------------------------------------------------------------
         .section ".reset", text
-        .align  4
+        .align  WORD_SIZE
         .globl  _RESET
 _RESET:
         jr      _start                    ; Jump to startup code
@@ -54,31 +58,31 @@ _RESET:
 ;------------------------------------------------------------------------------
 ; Exception Vector Table (Basic implementation)
 ;------------------------------------------------------------------------------
-        .align  512                       ; Align to 512 bytes
+        .align  EXC_TABLE_ALIGN           ; Align to exception table alignment
         .globl  __exception_table
 __exception_table:
-        jr      _dummy_exception          ; 0x00: RESET
-        jr      _dummy_exception          ; 0x10: SYSERR
-        jr      _dummy_exception          ; 0x20: reserved
-        jr      _dummy_exception          ; 0x30: FETRAP
-        jr      _dummy_exception          ; 0x40: TRAP0
-        jr      _dummy_exception          ; 0x50: TRAP1
-        jr      _dummy_exception          ; 0x60: RIE
-        jr      _dummy_exception          ; 0x70: reserved
-        jr      _dummy_exception          ; 0x80: reserved
-        jr      _dummy_exception          ; 0x90: reserved
-        jr      _dummy_exception          ; 0xA0: reserved
-        jr      _dummy_exception          ; 0xB0: reserved
-        jr      _dummy_exception          ; 0xC0: reserved
-        jr      _dummy_exception          ; 0xD0: reserved
-        jr      _dummy_exception          ; 0xE0: reserved
-        jr      _dummy_exception          ; 0xF0: reserved
+        jr      _exception_handler          ; 0x00: RESET
+        jr      _exception_handler          ; 0x10: SYSERR
+        jr      _exception_handler          ; 0x20: reserved
+        jr      _exception_handler          ; 0x30: FETRAP
+        jr      _exception_handler          ; 0x40: TRAP0
+        jr      _exception_handler          ; 0x50: TRAP1
+        jr      _tick_handler               ; 0x60: RIE -> timer tick handler
+        jr      _exception_handler          ; 0x70: reserved
+        jr      _exception_handler          ; 0x80: reserved
+        jr      _exception_handler          ; 0x90: reserved
+        jr      _exception_handler          ; 0xA0: reserved
+        jr      _exception_handler          ; 0xB0: reserved
+        jr      _exception_handler          ; 0xC0: reserved
+        jr      _exception_handler          ; 0xD0: reserved
+        jr      _exception_handler          ; 0xE0: reserved
+        jr      _exception_handler          ; 0xF0: reserved
 
 ;------------------------------------------------------------------------------
 ; Startup Code
 ;------------------------------------------------------------------------------
         .section ".text", text
-        .align  4
+        .align  WORD_SIZE
         .globl  _start
 _start:
         ; Disable interrupts
@@ -104,7 +108,7 @@ _start:
         br      _bss_check
 _bss_loop:
         st.w    r0, 0[r6]                 ; Clear word (zero the RAM)
-        add     4, r6                     ; Next word (word size = 4)
+        add     WORD_SIZE, r6             ; Next word (word size = WORD_SIZE)
 _bss_check:
         cmp     r7, r6                    ; Done? (r6 >= r7)
         bl      _bss_loop                 ; Loop if r6 < r7
@@ -123,8 +127,8 @@ _bss_check:
 _data_loop:
         ld.w    0[r6], r9                 ; Load from ROM
         st.w    r9, 0[r7]                 ; Store to RAM
-        add     4, r6                     ; Next source
-        add     4, r7                     ; Next destination
+        add     WORD_SIZE, r6             ; Next source
+        add     WORD_SIZE, r7             ; Next destination
 _data_check:
         cmp     r8, r7                    ; Check if done
         bl      _data_loop                ; Loop if r7 < r8
@@ -143,9 +147,21 @@ _data_check:
 ;------------------------------------------------------------------------------
 ; Dummy Exception Handler
 ;------------------------------------------------------------------------------
-        .align  4
-_dummy_exception:
-        br      _dummy_exception          ; Infinite loop
+        .align  WORD_SIZE
+_exception_handler:
+        br      _exception_handler          ; Infinite loop
+
+/*
+ * Simple timer tick handler entry used by example scheduler.
+ * This handler calls the C function `Scheduler_TickISR` and returns from
+ * interrupt. On RH850 the appropriate return instruction is `rte`.
+ */
+        .align  WORD_SIZE
+        .globl  _tick_handler
+_tick_handler:
+        ; call C tick function
+        jarl    _Scheduler_TickISR, lp
+        rte
 
 ;------------------------------------------------------------------------------
 ; End of File

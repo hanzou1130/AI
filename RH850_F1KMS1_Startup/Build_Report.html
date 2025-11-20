@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ビルドレポート - TAUJ0 Timer Implementation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Yu Gothic', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .status {
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .stat-card.error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .stat-card .number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-card .label {
+            font-size: 1em;
+            opacity: 0.95;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .badge-error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .log-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .error-line {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .warning-line {
+            color: #feca57;
+        }
+
+        .success-line {
+            color: #48dbfb;
+        }
+
+        .alert {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 6px solid;
+        }
+
+        .alert-error {
+            background: #fee;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .footer {
+            background: #f8f9ff;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 2px solid #667eea;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❌ ビルドレポート</h1>
+            <div class="status">ビルド失敗</div>
+            <div style="font-size: 0.9em; margin-top: 10px;">2025-11-20 22:14:29</div>
+        </div>
+
+        <div class="content">
+            <!-- 概要統計 -->
+            <div class="section">
+                <h2>📊 ビルド統計</h2>
+                <div class="stats-grid">
+                    <div class="stat-card success">
+                        <div class="label">成功したファイル</div>
+                        <div class="number">6</div>
+                        <div class="label">/ 7ファイル</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="label">警告</div>
+                        <div class="number">4</div>
+                        <div class="label">件</div>
+                    </div>
+                    <div class="stat-card error">
+                        <div class="label">エラー</div>
+                        <div class="number">6</div>
+                        <div class="label">件</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- コンパイル詳細 -->
+            <div class="section">
+                <h2>🔨 コンパイル詳細</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ステップ</th>
+                            <th>ファイル</th>
+                            <th>ステータス</th>
+                            <th>警告</th>
+                            <th>エラー</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1/7</td>
+                            <td>boot.asm</td>
+                            <td><span class="badge badge-success">✓ 成功</span></td>
+                            <td>4</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>2/7</td>
+                            <td>system_rh850.c</td>
+                            <td><span class="badge badge-success">✓ 成功</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>3/7</td>
+                            <td>main.c</td>
+                            <td><span class="badge badge-success">✓ 成功</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>4/7</td>
+                            <td>scheduler.c</td>
+                            <td><span class="badge badge-success">✓ 成功</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>5/7</td>
+                            <td>tauj_timer.c</td>
+                            <td><span class="badge badge-success">✓ 成功</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>6/7</td>
+                            <td>linker_symbols.c</td>
+                            <td><span class="badge badge-success">✓ 成功</span></td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr style="background: #fee;">
+                            <td>6.5/7</td>
+                            <td>crt_symbols.asm</td>
+                            <td><span class="badge badge-error">✗ 失敗</span></td>
+                            <td>0</td>
+                            <td>6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- エラー詳細 -->
+            <div class="section">
+                <h2>⚠️ エラー詳細</h2>
+
+                <div class="alert alert-error">
+                    <h3 style="margin-bottom: 15px;">crt_symbols.asm - 6件のエラー</h3>
+                    <p><strong>エラーコード:</strong> E0550249 - 構成に誤りがあります</p>
+                    <p style="margin-top: 10px;"><strong>該当行:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>6行目: __sdata セクション</li>
+                        <li>9行目: __sdata_rom セクション</li>
+                        <li>12行目: __edata セクション</li>
+                        <li>15行目: __sbss セクション</li>
+                        <li>18行目: __ebss セクション</li>
+                        <li>21行目: __stack セクション</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 警告詳細 -->
+            <div class="section">
+                <h2>⚡ 警告詳細</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ファイル</th>
+                            <th>行</th>
+                            <th>コード</th>
+                            <th>メッセージ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>boot.asm</td>
+                            <td>182</td>
+                            <td>W0550013</td>
+                            <td>r1がレジスタとしてオペランドに指定されています</td>
+                        </tr>
+                        <tr>
+                            <td>boot.asm</td>
+                            <td>186</td>
+                            <td>W0550013</td>
+                            <td>r1がレジスタとしてオペランドに指定されています</td>
+                        </tr>
+                        <tr>
+                            <td>boot.asm</td>
+                            <td>195</td>
+                            <td>W0550013</td>
+                            <td>r1がレジスタとしてオペランドに指定されています</td>
+                        </tr>
+                        <tr>
+                            <td>boot.asm</td>
+                            <td>199</td>
+                            <td>W0550013</td>
+                            <td>r1がレジスタとしてオペランドに指定されています</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ビルドログ -->
+            <div class="section">
+                <h2>📝 完全ビルドログ</h2>
+                <div class="log-box">
+                    <span class="success-line">========================================</span>
+                    <span class="success-line">Building RH850 Scheduler Project</span>
+                    <span class="success-line">========================================</span>
+
+                    <span class="success-line">[1/5] Assembling boot.asm...</span>
+                    <span class="warning-line">src\boot.asm(182):W0550013:r1がレジスタとしてオペランドに指定されています。</span>
+                    <span class="warning-line">src\boot.asm(186):W0550013:r1がレジスタとしてオペランドに指定されています。</span>
+                    <span class="warning-line">src\boot.asm(195):W0550013:r1がレジスタとしてオペランドに指定されています。</span>
+                    <span class="warning-line">src\boot.asm(199):W0550013:r1がレジスタとしてオペランドに指定されています。</span>
+
+                    <span class="success-line">[2/5] Compiling system_rh850.c...</span>
+
+                    <span class="success-line">[3/5] Compiling main.c...</span>
+
+                    <span class="success-line">[4/7] Compiling scheduler.c...</span>
+
+                    <span class="success-line">[5/7] Compiling tauj_timer.c...</span>
+
+                    <span class="success-line">[6/7] Compiling linker_symbols.c...</span>
+
+                    <span class="success-line">[6.5/7] Assembling crt_symbols.asm...</span>
+                    <span class="error-line">src\crt_symbols.asm(6):E0550249:構成に誤りがあります。</span>
+                    <span class="error-line">src\crt_symbols.asm(9):E0550249:構成に誤りがあります。</span>
+                    <span class="error-line">src\crt_symbols.asm(12):E0550249:構成に誤りがあります。</span>
+                    <span class="error-line">src\crt_symbols.asm(15):E0550249:構成に誤りがあります。</span>
+                    <span class="error-line">src\crt_symbols.asm(18):E0550249:構成に誤りがあります。</span>
+                    <span class="error-line">src\crt_symbols.asm(21):E0550249:構成に誤りがあります。</span>
+
+                    <span class="error-line">========================================</span>
+                    <span class="error-line">Build failed with errors!</span>
+                    <span class="error-line">========================================</span>
+                </div>
+            </div>
+
+            <!-- 推奨アクション -->
+            <div class="section">
+                <h2>💡 推奨アクション</h2>
+                <div class="alert alert-error">
+                    <h3 style="margin-bottom: 15px;">crt_symbols.asmのエラーを修正</h3>
+                    <p><strong>問題:</strong> アセンブリ構文エラー - <code>.space</code>ディレクティブの使用方法が不正</p>
+                    <p style="margin-top: 10px;"><strong>原因:</strong>
+                        RH850アセンブラの構文では、ラベル定義の直後に<code>.space</code>を使用できません</p>
+                    <p style="margin-top: 10px;"><strong>解決策:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>オプション1: <code>.res</code>ディレクティブを使用</li>
+                        <li>オプション2: リンカースクリプトでシンボルを定義</li>
+                        <li>オプション3: boot.asmとの依存関係を見直し、不要なシンボルを削除</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAUJ0実装状況 -->
+            <div class="section">
+                <h2>✅ TAUJ0タイマ実装状況</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>コンポーネント</th>
+                            <th>ステータス</th>
+                            <th>備考</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TAUJ0レジスタ定義</td>
+                            <td><span class="badge badge-success">✓ 完了</span></td>
+                            <td>rh850_regs.h</td>
+                        </tr>
+                        <tr>
+                            <td>TAUJドライバ実装</td>
+                            <td><span class="badge badge-success">✓ 完了</span></td>
+                            <td>tauj_timer.c/h</td>
+                        </tr>
+                        <tr>
+                            <td>システム統合</td>
+                            <td><span class="badge badge-success">✓ 完了</span></td>
+                            <td>system_rh850.c</td>
+                        </tr>
+                        <tr>
+                            <td>割り込みベクタ</td>
+                            <td><span class="badge badge-success">✓ 完了</span></td>
+                            <td>boot.asm</td>
+                        </tr>
+                        <tr>
+                            <td>ビルドシステム</td>
+                            <td><span class="badge badge-success">✓ 完了</span></td>
+                            <td>build.bat</td>
+                        </tr>
+                        <tr style="background: #fee;">
+                            <td>スタートアップコード</td>
+                            <td><span class="badge badge-error">✗ エラー</span></td>
+                            <td>crt_symbols.asm構文エラー</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>📄 ビルド環境情報</h3>
+            <p>コンパイラ: CC-RH V2.07.00</p>
+            <p>アセンブラ: ASRH</p>
+            <p>リンカ: RLINK</p>
+            <p style="margin-top: 20px;">プロジェクト: RH850/F1KMS-1 TAUJ0 Timer Implementation</p>
+        </div>
+    </div>
+</body>
+
+</html>

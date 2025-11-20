@@ -1,0 +1,20 @@
+Renesas Optimizing Linker (W3.07.00 )             20-Nov-2025 21:58:35
+
+*** Options ***
+
+boot.obj
+system_rh850.obj
+main.obj
+scheduler.obj
+tauj_timer.obj
+linker_symbols.obj
+crt_symbols.obj
+-output=firmware
+.elf
+-list=firmware
+.map
+-start=RESET/0
+
+*** Error information ***
+
+F0563300:Cannot open file : "crt_symbols.obj"

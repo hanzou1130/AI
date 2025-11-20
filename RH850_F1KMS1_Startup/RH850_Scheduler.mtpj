@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MicomToolProject Version="1.00" Name="RH850_Scheduler">
+  <CreationDate>2025-11-16</CreationDate>
+  <Modification>
+    <Modifier>GitHub Copilot</Modifier>
+    <DateTime>2025-11-16</DateTime>
+  </Modification>
+  <General>
+    <ProjectKind>Application</ProjectKind>
+    <TargetDevice Series="RH850" Name="R7F701403"/>
+    <ProjectFolder>.</ProjectFolder>
+    <Toolchain>CCRH</Toolchain>
+    <ToolchainVersion>V2.07.00</ToolchainVersion>
+  </General>
+  <BuildConfiguration>
+    <Configuration Name="DefaultBuild">
+      <CompileOptions>
+        <Compiler>
+          <CPU>g3m</CPU>
+          <OptimizationLevel>2</OptimizationLevel>
+          <DebugInfo>true</DebugInfo>
+          <IncludePaths>
+            <Path>inc</Path>
+          </IncludePaths>
+        </Compiler>
+        <Assembler>
+          <CPU>g3m</CPU>
+          <DebugInfo>true</DebugInfo>
+        </Assembler>
+        <Linker>
+          <ScriptFile>linker_script.ld</ScriptFile>
+          <OutputFormat>ELF</OutputFormat>
+        </Linker>
+      </CompileOptions>
+      <Files>
+        <File Type="Assembly">src/cstartup.asm</File>
+        <File Type="C">src/system_rh850.c</File>
+        <File Type="C">src/main.c</File>
+        <File Type="C">src/scheduler.c</File>
+        <File Type="Header">inc/system_rh850.h</File>
+        <File Type="Header">inc/rh850_regs.h</File>
+        <File Type="Header">src/scheduler.h</File>
+        <File Type="Linker">linker_script.ld</File>
+      </Files>
+    </Configuration>
+  </BuildConfiguration>
+</MicomToolProject>

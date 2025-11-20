@@ -20,47 +20,47 @@
     <rect x="200" y="30" width="300" height="28" class="box"/>
     <text x="350" y="44" text-anchor="middle" dominant-baseline="middle" class="text">Reset Vector (_RESET)</text>
 
-    <path class="arrow" d="M350 78 L350 120" />
+    <path class="arrow" d="M350 58 L350 120" />
 
     <rect x="200" y="120" width="300" height="28" class="box alt"/>
     <text x="350" y="134" text-anchor="middle" dominant-baseline="middle" class="text">_start (cstartup.asm)</text>
 
-    <path class="arrow" d="M350 168 L350 210" />
+    <path class="arrow" d="M350 148 L350 210" />
 
     <rect x="200" y="210" width="300" height="28" class="box"/>
     <text x="350" y="224" text-anchor="middle" dominant-baseline="middle" class="text">Disable interrupts (di)</text>
 
-    <path class="arrow" d="M350 258 L350 300" />
+    <path class="arrow" d="M350 238 L350 300" />
 
     <rect x="200" y="300" width="300" height="28" class="box alt"/>
     <text x="350" y="314" text-anchor="middle" dominant-baseline="middle" class="text">Initialize SP (SP_INIT)</text>
 
-    <path class="arrow" d="M350 348 L350 390" />
+    <path class="arrow" d="M350 328 L350 390" />
 
     <rect x="200" y="390" width="300" height="28" class="box"/>
     <text x="350" y="404" text-anchor="middle" dominant-baseline="middle" class="text">Clear BSS (__sbss → __ebss)</text>
 
-    <path class="arrow" d="M350 438 L350 480" />
+    <path class="arrow" d="M350 418 L350 480" />
 
     <rect x="200" y="480" width="300" height="28" class="box alt"/>
     <text x="350" y="494" text-anchor="middle" dominant-baseline="middle" class="text">Copy initialized data (ROM → RAM)</text>
 
-    <path class="arrow" d="M350 528 L350 570" />
+    <path class="arrow" d="M350 508 L350 570" />
 
     <rect x="200" y="570" width="300" height="28" class="box"/>
     <text x="350" y="584" text-anchor="middle" dominant-baseline="middle" class="text">Call SystemInit()</text>
 
-    <path class="arrow" d="M350 618 L350 660" />
+    <path class="arrow" d="M350 598 L350 660" />
 
     <rect x="200" y="660" width="300" height="28" class="box alt"/>
     <text x="350" y="674" text-anchor="middle" dominant-baseline="middle" class="text">Enable interrupts (ei)</text>
 
-    <path class="arrow" d="M350 708 L350 750" />
+    <path class="arrow" d="M350 688 L350 750" />
 
     <rect x="200" y="750" width="300" height="28" class="box"/>
     <text x="350" y="764" text-anchor="middle" dominant-baseline="middle" class="text">Jump to main()</text>
 
-    <path class="arrow" d="M350 798 L350 840" />
+    <path class="arrow" d="M350 778 L350 840" />
 
     <rect x="200" y="840" width="300" height="28" class="box alt"/>
     <text x="350" y="854" text-anchor="middle" dominant-baseline="middle" class="text">main() - Application</text>

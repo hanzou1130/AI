@@ -11,6 +11,8 @@
  * Includes
  *--------------------------------------------------------------------------*/
 #include "system_rh850.h"
+#include "rh850_regs.h"
+#include "tauj_timer.h"
 
 /*----------------------------------------------------------------------------
  * Local Definitions
@@ -24,6 +26,21 @@
 
 /* PLL stabilization time */
 #define PLL_STAB_COUNT          (1000UL)
+/* Hardware register constants */
+#define MAINOSC_ENABLE              (0x01U)
+#define MOSCS_ACT_BIT               (0x04U)
+#define PLLC0_ENABLE                (0x00000001U)
+#define PLLS_ACT_BIT                (0x04U)
+
+/* CKSC CTL values and offsets */
+#define CKSC_CPU_SEL_PLL_DIV2       (0x01U)
+#define CKSC_PERI_SEL_PLL_DIV4      (0x02U)
+#define CKSC_ACT_MASK               (0x03U)
+#define CKSC_PERI_OFFSET            (0x100U)
+
+/* EIC defaults */
+#define EIC_COUNT                   (512U)
+#define EIC_DEFAULT_MASK            (0x00BFU)
 
 /*----------------------------------------------------------------------------
  * Local Variables
@@ -46,6 +63,10 @@ void SystemInit ( void )
   /* Initialize interrupt controller */
   InterruptInit ();
   
+  /* Initialize TAUJ0 for 1ms interval timer */
+  TAUJ0_Init ( 1000 );      /* 1000us = 1ms */
+  TAUJ0_Start ();
+  
   /* Additional hardware initialization can be added here */
 }
 
@@ -55,16 +76,18 @@ void SystemInit ( void )
 void SystemClockInit ( void )
 {
   volatile uint32_t timeout;
+  CKSC_Type *cpuclk;
+  CKSC_Type *periclk;
   
   /*--------------------------------------------------------------------------
    * Step 1: Enable Main Oscillator (MainOSC)
    *------------------------------------------------------------------------*/
-  MOSCE = 0x01;                         /* Enable MainOSC */
+  MOSCE = MAINOSC_ENABLE;              /* Enable MainOSC */
   
   /* Wait for MainOSC stabilization */
   for ( timeout = 0; timeout < MOSC_STAB_COUNT; timeout++ )
   {
-    if ( ( MOSCS & 0x04 ) != 0 )        /* Check MOSCS.ACT bit */
+    if ( ( MOSCS & MOSCS_ACT_BIT ) != 0 )        /* Check MOSCS.ACT bit */
     {
       break;
     }
@@ -78,12 +101,12 @@ void SystemClockInit ( void )
    * Multiplier: x15
    * Output: 240MHz
    */
-  PLLC0 = 0x00000001;                   /* Enable PLL with default settings */
+  PLLC0 = PLLC0_ENABLE;                 /* Enable PLL with default settings */
   
   /* Wait for PLL stabilization */
   for ( timeout = 0; timeout < PLL_STAB_COUNT; timeout++ )
   {
-    if ( ( PLLS0 & 0x04 ) != 0 )        /* Check PLLS.ACT bit */
+    if ( ( PLLS0 & PLLS_ACT_BIT ) != 0 )        /* Check PLLS.ACT bit */
     {
       break;
     }
@@ -93,14 +116,14 @@ void SystemClockInit ( void )
    * Step 3: Configure Clock Dividers
    *------------------------------------------------------------------------*/
   /* CPU Clock: 240MHz / 2 = 120MHz */
-  CKSC_Type *cpuclk = (CKSC_Type *)(CKSC_BASE + 0x000);
-  cpuclk->CTL = 0x01;                   /* Select PLL / 2 */
-  while ( ( cpuclk->ACT & 0x03 ) != 0x01 );
+  cpuclk = (CKSC_Type *)(CKSC_BASE + 0x000);
+  cpuclk->CTL = CKSC_CPU_SEL_PLL_DIV2;  /* Select PLL / 2 */
+  while ( ( cpuclk->ACT & CKSC_ACT_MASK ) != CKSC_CPU_SEL_PLL_DIV2 );
   
   /* Peripheral Clock: 240MHz / 4 = 60MHz */
-  CKSC_Type *periclk = (CKSC_Type *)(CKSC_BASE + 0x100);
-  periclk->CTL = 0x02;                  /* Select PLL / 4 */
-  while ( ( periclk->ACT & 0x03 ) != 0x02 );
+  periclk = (CKSC_Type *)(CKSC_BASE + CKSC_PERI_OFFSET);
+  periclk->CTL = CKSC_PERI_SEL_PLL_DIV4; /* Select PLL / 4 */
+  while ( ( periclk->ACT & CKSC_ACT_MASK ) != CKSC_PERI_SEL_PLL_DIV4 );
   
   /* Update global clock variables */
   g_system_clock = SYSTEM_CLOCK_HZ;
@@ -119,10 +142,10 @@ void InterruptInit ( void )
    * Configure all external interrupt channels
    * Default: Disabled, Priority = 15 (lowest)
    *------------------------------------------------------------------------*/
-  for ( i = 0; i < 512; i++ )
+  for ( i = 0; i < EIC_COUNT; i++ )
   {
     eic = (volatile uint16_t *)(EIC_BASE + (i * 2));
-    *eic = 0x00BF;                      /* Mask interrupt, priority 15, table reference */
+    *eic = EIC_DEFAULT_MASK;            /* Mask interrupt, priority 15, table reference */
   }
   
   /* Additional INTC configuration can be added here */
@@ -159,8 +182,8 @@ void SystemDelay ( uint32_t ms )
   {
     for ( count = 0; count < cycles_per_ms; count++ )
     {
-      /* Busy wait */
-      __asm volatile ( "nop" );
+      /* Busy wait - volatile access to prevent optimization */
+      (void)count;
     }
   }
 }

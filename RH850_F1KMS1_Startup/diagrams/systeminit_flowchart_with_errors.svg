@@ -19,40 +19,40 @@
   <g transform="translate(40,70)">
     <rect x="450" y="10" width="300" height="28" class="box"/>
     <text x="600" y="24" text-anchor="middle" dominant-baseline="middle" class="text">SystemInit()</text>
-    <path class="arrow" d="M600 58 L600 110" />
+    <path class="arrow" d="M600 38 L600 110" />
 
     <!-- MainOSC -->
     <rect x="450" y="110" width="300" height="28" class="alt"/>
     <text x="600" y="124" text-anchor="middle" dominant-baseline="middle" class="text">Enable MainOSC (MOSCE=0x01)</text>
-    <path class="arrow" d="M600 168 L600 220" />
+    <path class="arrow" d="M600 138 L600 220" />
 
     <!-- MOSC check -->
     <rect x="450" y="220" width="300" height="28" class="box"/>
     <text x="370" y="234" text-anchor="middle" dominant-baseline="middle" class="text">Wait MOSC stable (MOSCS.ACT)</text>
-    <path class="arrow" d="M370 276 L370 320" />
+    <path class="arrow" d="M370 248 L370 320" />
 
     <rect x="450" y="320" width="300" height="28" class="alt"/>
     <text x="370" y="334" text-anchor="middle" dominant-baseline="middle" class="text">MOSC OK → continue</text>
-    <path class="arrow" d="M370 376 L600 376" />
+    <path class="arrow" d="M370 348 L600 376" />
 
     <!-- MOSC fail branch -->
     <rect x="450" y="320" width="300" height="28" class="fail"/>
     <text x="830" y="334" text-anchor="middle" dominant-baseline="middle" class="text">MOSC FAIL → retry / fallback</text>
     <text x="830" y="370" text-anchor="middle" class="text" style="font-size:12px;">Try internal RC or retry N times</text>
 
-    <path class="arrow" d="M830 384 L830 430" />
+    <path class="arrow" d="M830 348 L830 430" />
     <rect x="450" y="430" width="300" height="28" class="fail"/>
     <text x="830" y="444" text-anchor="middle" dominant-baseline="middle" class="text">Fallback failed → enter Safe Mode / LED error</text>
-    <path class="arrow" d="M830 498 L600 498" />
+    <path class="arrow" d="M830 468 L600 498" />
 
     <!-- Continue to PLL -->
     <rect x="450" y="376" width="300" height="28" class="box alt"/>
     <text x="600" y="390" text-anchor="middle" dominant-baseline="middle" class="text">Configure PLL (PLLC0) and enable</text>
-    <path class="arrow" d="M600 440 L600 500" />
+    <path class="arrow" d="M600 404 L600 500" />
 
     <rect x="450" y="500" width="300" height="28" class="box"/>
     <text x="600" y="514" text-anchor="middle" dominant-baseline="middle" class="text">Wait PLL stable (PLLS.ACT)</text>
-    <path class="arrow" d="M600 556 L600 620" />
+    <path class="arrow" d="M600 528 L600 620" />
 
     <!-- PLL fail branch -->
     <rect x="450" y="556" width="300" height="28" class="fail"/>
@@ -64,17 +64,17 @@
     <rect x="450" y="620" width="300" height="28" class="alt"/>
     <text x="600" y="634" text-anchor="middle" dominant-baseline="middle" class="text">Configure clock dividers & selectors (CKSC registers)</text>
     <text x="600" y="672" text-anchor="middle" class="text" style="font-size:12px;">Set CPU / peripheral sources and wait for ACT</text>
-    <path class="arrow" d="M600 696 L600 760" />
+    <path class="arrow" d="M600 648 L600 760" />
 
     <!-- Protect / watchdog handling -->
     <rect x="450" y="760" width="300" height="28" class="box"/>
     <text x="600" y="774" text-anchor="middle" dominant-baseline="middle" class="text">Unlock protected regs / refresh WDOG if needed</text>
-    <path class="arrow" d="M600 812 L600 860" />
+    <path class="arrow" d="M600 788 L600 860" />
 
     <!-- Data verify branch (optional) -->
     <rect x="450" y="860" width="300" height="28" class="alt"/>
     <text x="600" y="874" text-anchor="middle" dominant-baseline="middle" class="text">Optional: Verify data copy / CRC check</text>
-    <path class="arrow" d="M600 916 L600 960" />
+    <path class="arrow" d="M600 888 L600 960" />
 
     <rect x="450" y="960" width="300" height="28" class="box"/>
     <text x="450" y="974" text-anchor="middle" dominant-baseline="middle" class="text">Verify OK → continue</text>

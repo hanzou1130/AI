@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAUJ0タイマ アーキテクチャ設計書 - RH850/F1KMS-1</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Yu Gothic', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .header .meta {
+            font-size: 0.95em;
+            opacity: 0.85;
+            margin-top: 15px;
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #667eea;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.6em;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .card {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+            border-left: 6px solid #667eea;
+        }
+
+        .card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .alert {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 6px solid;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ff9800;
+            color: #856404;
+        }
+
+        .alert-note {
+            background: #e7f3ff;
+            border-color: #2196f3;
+            color: #004085;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-family: 'Courier New', 'Consolas', monospace;
+            color: #d63384;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        pre code {
+            background: none;
+            color: #f8f8f2;
+            padding: 0;
+        }
+
+        ul,
+        ol {
+            margin-left: 30px;
+            margin-top: 15px;
+        }
+
+        li {
+            padding: 8px 0;
+            line-height: 1.6;
+        }
+
+        .mermaid {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            background: #f8f9ff;
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            border-top: 3px solid #667eea;
+            font-size: 0.95em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .label {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        p {
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ TAUJ0タイマ アーキテクチャ設計書</h1>
+            <div class="subtitle">RH850/F1KMS-1 1msインターバルタイマ</div>
+            <div class="meta">
+                バージョン 1.0 | 最終更新: 2025-11-20
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- システム概要 -->
+            <div class="section">
+                <h2>📋 1. システム概要</h2>
+
+                <h3>1.1 目的</h3>
+                <p>RH850/F1KMS-1マイコンの<strong>TAUJ0（Timer Array Unit
+                        J）</strong>を使用して、1ms周期のインターバルタイマを実装し、スケジューラおよび時間管理機能の基盤を提供します。</p>
+
+                <h3>1.2 主要機能</h3>
+                <ul>
+                    <li>1msの高精度タイマ割り込み生成</li>
+                    <li>スケジューラティックカウンタの更新</li>
+                    <li>柔軟なタイマ制御API（開始/停止/カウント値取得）</li>
+                    <li>ハードウェア抽象化レイヤーの提供</li>
+                </ul>
+            </div>
+
+            <!-- システムアーキテクチャ -->
+            <div class="section">
+                <h2>🏗️ 2. システムアーキテクチャ</h2>
+
+                <h3>2.1 レイヤー構成</h3>
+                <div class="mermaid">
+                    graph TB
+                    subgraph "アプリケーション層"
+                    A[Scheduler]
+                    B[Main Application]
+                    end
+
+                    subgraph "ドライバ層"
+                    C[TAUJ0 Timer Driver<br />tauj_timer.c/h]
+                    end
+
+                    subgraph "HAL層"
+                    D[Register Definitions<br />rh850_regs.h]
+                    end
+
+                    subgraph "割り込み層"
+                    E[Interrupt Vector Table<br />boot.asm]
+                    F[Interrupt Handler<br />_tauj0_tick_handler]
+                    end
+
+                    subgraph "ハードウェア層"
+                    G[TAUJ0 Peripheral<br />Timer Hardware]
+                    end
+
+                    A -->|Scheduler_TickISR| C
+                    B -->|TAUJ0_Init/Start| C
+                    C -->|Register Access| D
+                    D -->|Memory-Mapped I/O| G
+                    G -->|Hardware Interrupt| E
+                    E -->|Call| F
+                    F -->|Call| C
+                    C -->|Callback| A
+                </div>
+
+                <h3>2.2 モジュール間の依存関係</h3>
+                <div class="mermaid">
+                    graph LR
+                    TH[tauj_timer.h]
+                    TC[tauj_timer.c]
+                    RH[rh850_regs.h]
+                    SH[system_rh850.h]
+                    SCH[scheduler.h]
+                    BA[boot.asm]
+
+                    TC -->|include| TH
+                    TC -->|include| RH
+                    TC -->|include| SH
+                    TC -->|include| SCH
+                    BA -->|extern| TC
+
+                    style TH fill:#e1f5ff
+                    style TC fill:#fff3e0
+                    style RH fill:#f3e5f5
+                    style BA fill:#e8f5e9
+                </div>
+            </div>
+
+            <!-- モジュール詳細設計 -->
+            <div class="section">
+                <h2>🔍 3. モジュール詳細設計</h2>
+
+                <h3>3.1 TAUJ0タイマドライバ</h3>
+
+                <h4>3.1.1 ファイル構成</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ファイル</th>
+                            <th>役割</th>
+                            <th>公開/非公開</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>inc/tauj_timer.h</code></td>
+                            <td>パブリックAPI定義</td>
+                            <td>公開</td>
+                        </tr>
+                        <tr>
+                            <td><code>src/tauj_timer.c</code></td>
+                            <td>ドライバ実装</td>
+                            <td>非公開</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>3.1.2 API仕様</h4>
+                <div class="card">
+                    <h4>TAUJ0_Init()</h4>
+                    <pre><code>void TAUJ0_Init(uint32_t interval_us);</code></pre>
+                    <p><strong>パラメータ:</strong></p>
+                    <ul>
+                        <li><code>interval_us</code>: タイマ割り込み周期（マイクロ秒）</li>
+                        <li>範囲: 1～71,582,788 us（60MHz PCLK時）</li>
+                    </ul>
+                    <p><strong>動作:</strong></p>
+                    <ol>
+                        <li>ペリフェラルクロックから比較値を計算</li>
+                        <li>TAUJ0チャネル0をインターバルモードで設定</li>
+                        <li>EIC割り込みマスクを解除</li>
+                    </ol>
+                </div>
+
+                <div class="card">
+                    <h4>タイマ制御API</h4>
+                    <pre><code>void TAUJ0_Start(void);   // タイマ開始
+void TAUJ0_Stop(void);    // タイマ停止
+uint32_t TAUJ0_GetCount(void);  // カウンタ値取得</code></pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ 警告:</strong> 割り込みチャネル番号（EIC80）はハードウェアマニュアルで確認が必要です。実機環境により異なる場合があります。
+                </div>
+
+                <h3>3.2 レジスタ定義層</h3>
+
+                <h4>3.2.1 TAUJ0レジスタマップ</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>オフセット</th>
+                            <th>レジスタ名</th>
+                            <th>アクセス</th>
+                            <th>説明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0x0000</td>
+                            <td>TAUJ0CDR0</td>
+                            <td>R/W</td>
+                            <td>チャネル0データレジスタ（比較値）</td>
+                        </tr>
+                        <tr>
+                            <td>0x0010</td>
+                            <td>TAUJ0CNT0</td>
+                            <td>R</td>
+                            <td>チャネル0カウンタレジスタ</td>
+                        </tr>
+                        <tr>
+                            <td>0x0020</td>
+                            <td>TAUJ0CMOR0</td>
+                            <td>R/W</td>
+                            <td>チャネル0モードレジスタ</td>
+                        </tr>
+                        <tr>
+                            <td>0x0024</td>
+                            <td>TAUJ0CMUR0</td>
+                            <td>R/W</td>
+                            <td>チャネル0クロック選択レジスタ</td>
+                        </tr>
+                        <tr>
+                            <td>0x0028</td>
+                            <td>TAUJ0CSR0</td>
+                            <td>R</td>
+                            <td>チャネル0ステータスレジスタ</td>
+                        </tr>
+                        <tr>
+                            <td>0x002C</td>
+                            <td>TAUJ0CSC0</td>
+                            <td>W</td>
+                            <td>チャネル0ステータスクリア</td>
+                        </tr>
+                        <tr>
+                            <td>0x0034</td>
+                            <td>TAUJ0TS</td>
+                            <td>W</td>
+                            <td>タイマスタートトリガ</td>
+                        </tr>
+                        <tr>
+                            <td>0x0038</td>
+                            <td>TAUJ0TT</td>
+                            <td>W</td>
+                            <td>タイマストップトリガ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- データフローと制御フロー -->
+            <div class="section">
+                <h2>🔄 4. データフローと制御フロー</h2>
+
+                <h3>4.1 初期化シーケンス</h3>
+                <div class="mermaid">
+                    sequenceDiagram
+                    participant App as Application
+                    participant Sys as SystemInit
+                    participant Drv as TAUJ0 Driver
+                    participant HW as TAUJ0 Hardware
+                    participant INTC as Interrupt Controller
+
+                    App->>Sys: main()
+                    Sys->>Sys: SystemClockInit()
+                    Sys->>Sys: InterruptInit()
+                    Sys->>Drv: TAUJ0_Init(1000)
+
+                    Drv->>Drv: 比較値計算<br />(PCLK/1000000)*1000
+                    Drv->>HW: TAUJ0TT = CH0 (停止)
+                    Drv->>HW: TAUJ0CMOR0 = INTERVAL
+                    Drv->>HW: TAUJ0CMUR0 = PCLK
+                    Drv->>HW: TAUJ0CDR0 = 比較値
+                    Drv->>HW: TAUJ0CSC0 = 0x01
+                    Drv->>INTC: EIC(80) &= ~EIMK
+
+                    Sys->>Drv: TAUJ0_Start()
+                    Drv->>HW: TAUJ0TS = CH0 (開始)
+
+                    Note over HW: タイマカウント開始
+                </div>
+
+                <h3>4.2 割り込み処理フロー</h3>
+                <div class="mermaid">
+                    sequenceDiagram
+                    participant HW as TAUJ0 Hardware
+                    participant CPU as CPU Core
+                    participant ASM as boot.asm Handler
+                    participant Drv as TAUJ0_InterruptHandler
+                    participant Sch as Scheduler
+
+                    Note over HW: カウンタ == 比較値
+                    HW->>CPU: 割り込み信号
+                    CPU->>ASM: _tauj0_tick_handler
+
+                    ASM->>ASM: レジスタ退避<br />(r1, r2, lp)
+                    ASM->>Drv: TAUJ0_InterruptHandler()
+
+                    Drv->>HW: TAUJ0CSC0 = 0x01<br />(割り込みフラグクリア)
+                    Drv->>Sch: Scheduler_TickISR()
+                    Sch->>Sch: s_ticks_ms++
+
+                    Drv-->>ASM: return
+                    ASM->>ASM: レジスタ復帰
+                    ASM->>CPU: eiret (割り込み復帰)
+
+                    Note over HW: カウンタ自動リロード<br />次の1msカウント開始
+                </div>
+            </div>
+
+            <!-- リソース使用状況 -->
+            <div class="section">
+                <h2>📊 5. リソース使用状況</h2>
+
+                <h3>5.1 ハードウェアリソース</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>リソース</th>
+                            <th>使用内容</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TAUJ0 ユニット</td>
+                            <td>チャネル0のみ使用（Ch1～3は未使用）</td>
+                        </tr>
+                        <tr>
+                            <td>割り込みチャネル</td>
+                            <td>EIC80（仮定、要確認）</td>
+                        </tr>
+                        <tr>
+                            <td>クロック</td>
+                            <td>ペリフェラルクロック（60MHz）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>5.2 メモリ使用量</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">コードサイズ (.text)</div>
+                        <div class="value">~400</div>
+                        <div class="label">bytes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">データ (.data)</div>
+                        <div class="value">0</div>
+                        <div class="label">bytes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">BSS (.bss)</div>
+                        <div class="value">0</div>
+                        <div class="label">bytes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">スタック使用</div>
+                        <div class="value">12</div>
+                        <div class="label">bytes (割り込み時)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 設計上の考慮事項 -->
+            <div class="section">
+                <h2>💡 6. 設計上の考慮事項</h2>
+
+                <h3>6.1 精度と誤差</h3>
+                <div class="card">
+                    <h4>理論精度</h4>
+                    <ul>
+                        <li>ペリフェラルクロック: 60MHz</li>
+                        <li>カウント値: 60,000</li>
+                        <li>周期: 60,000 / 60,000,000 = 1.000ms（理論値）</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h4>誤差要因</h4>
+                    <ol>
+                        <li>クロック源の精度（PLL、水晶振動子の温度特性）</li>
+                        <li>割り込みレイテンシ（数μs）</li>
+                        <li>割り込み処理時間（数十μs）</li>
+                    </ol>
+                </div>
+
+                <div class="alert alert-note">
+                    <strong>📝 Note:</strong> スケジューラのティック更新は割り込みハンドラ内で実行されるため、ジッター（タイミングのばらつき）は最小限に抑えられます。
+                </div>
+
+                <h3>6.2 割り込み優先度</h3>
+                <ul>
+                    <li>デフォルト優先度: 未設定（EICレジスタのデフォルト値に依存）</li>
+                    <li>推奨設定: 中優先度（他の重要な割り込みより低く、低速周辺機器より高く）</li>
+                </ul>
+
+                <h3>6.3 スレッドセーフティ</h3>
+                <ul>
+                    <li><code>Scheduler_TickISR()</code>は割り込みコンテキストから呼ばれるため、原子性が保証される</li>
+                    <li><code>TAUJ0_GetCount()</code>は読み取り専用のため、競合の心配なし</li>
+                    <li><code>TAUJ0_Start()/Stop()</code>は割り込み無効化区間での使用を推奨</li>
+                </ul>
+            </div>
+
+            <!-- テストと検証 -->
+            <div class="section">
+                <h2>🧪 9. テストと検証</h2>
+
+                <h3>9.1 単体テスト項目</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>テスト項目</th>
+                            <th>検証内容</th>
+                            <th>合格基準</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>初期化テスト</td>
+                            <td>レジスタ設定確認</td>
+                            <td>期待値と一致</td>
+                        </tr>
+                        <tr>
+                            <td>カウント精度</td>
+                            <td>オシロスコープ測定</td>
+                            <td>1ms ± 0.1%</td>
+                        </tr>
+                        <tr>
+                            <td>割り込み発生</td>
+                            <td>LED点滅周期確認</td>
+                            <td>500ms周期で点滅</td>
+                        </tr>
+                        <tr>
+                            <td>開始/停止制御</td>
+                            <td>API動作確認</td>
+                            <td>正しく動作</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>9.2 統合テスト項目</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>テスト項目</th>
+                            <th>検証内容</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>スケジューラ連携</td>
+                            <td>タスクが正しい周期で実行される</td>
+                        </tr>
+                        <tr>
+                            <td>長時間動作</td>
+                            <td>24時間以上の連続動作でドリフトなし</td>
+                        </tr>
+                        <tr>
+                            <td>負荷テスト</td>
+                            <td>高負荷時も割り込みが欠落しない</td>
+                        </tr>
+                        <tr>
+                            <td>電源投入テスト</td>
+                            <td>リセット後の初期化が正常</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 付録 -->
+            <div class="section">
+                <h2>📎 付録A: レジスタ設定値一覧</h2>
+
+                <h3>A.1 初期化時のレジスタ設定</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>レジスタ</th>
+                            <th>設定値</th>
+                            <th>説明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>TAUJ0CMOR0</td>
+                            <td>0x00</td>
+                            <td>インターバルタイマモード</td>
+                        </tr>
+                        <tr>
+                            <td>TAUJ0CMUR0</td>
+                            <td>0x00</td>
+                            <td>PCLK使用（分周なし）</td>
+                        </tr>
+                        <tr>
+                            <td>TAUJ0CDR0</td>
+                            <td>60,000</td>
+                            <td>1ms周期（60MHz時）</td>
+                        </tr>
+                        <tr>
+                            <td>TAUJ0TS</td>
+                            <td>0x01</td>
+                            <td>チャネル0スタート</td>
+                        </tr>
+                        <tr>
+                            <td>EIC(80)</td>
+                            <td>~0x80</td>
+                            <td>割り込みマスク解除</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>A.2 比較値計算式</h3>
+                <div class="card">
+                    <pre><code>compare_value = (peripheral_clock_hz / 1,000,000) × interval_us
+
+例: 1ms周期の場合
+compare_value = (60,000,000 / 1,000,000) × 1,000 = 60,000</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>📄 文書管理情報</h3>
+            <p>作成日: 2025-11-20 | 作成者: Antigravity AI</p>
+            <p>レビュー状態: 初版 | 承認者: 未承認</p>
+            <p style="margin-top: 20px;">© 2025 RH850/F1KMS-1 TAUJ0 Timer Project</p>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#667eea',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#764ba2',
+                lineColor: '#667eea',
+                secondaryColor: '#764ba2',
+                tertiaryColor: '#f8f9ff'
+            }
+        });
+    </script>
+</body>
+
+</html>
